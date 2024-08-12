@@ -47,6 +47,9 @@ def signup():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+    if users.find_one({'email': email}):
+        users.delete_many({'email': email})
+
     user = {
         'uid': user.uid,
         'name': name,
