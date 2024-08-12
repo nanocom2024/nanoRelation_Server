@@ -2,6 +2,14 @@
 
 ## server
 
+<details><summary>DB(MongoDB)のインストール</summary>
+
+```zsh  
+brew tap mongodb/brew
+brew install mongodb-community
+```
+</details>
+
 ### DBの起動
 
 ```zsh
