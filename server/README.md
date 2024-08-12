@@ -2,6 +2,8 @@
 
 ## 準備
 
+Python 3.11.5
+
 FirebaseのAuthenticationを用いています
 
 ### 環境設定
