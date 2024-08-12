@@ -10,6 +10,7 @@ class Settings:
         # 環境変数から設定値を取得
         self.__path_to_firebase_json = os.environ.get("PATH_TO_FIREBASE_JSON")
         self.__jwt_secret_key = os.environ.get("JWT_SECRET_KEY")
+        self.__firebase_api_key = os.environ.get("FIREBASE_API_KEY")
 
     # firebase の json
     @property
@@ -20,3 +21,8 @@ class Settings:
     @property
     def jwt_secret_key(self):
         return self.__jwt_secret_key
+
+    # firebase の api key
+    @property
+    def firebase_api_key(self):
+        return self.__firebase_api_key
