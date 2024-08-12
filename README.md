@@ -10,6 +10,14 @@ brew install mongodb-community
 ```
 </details>
 
+<details><summary>Python(3.11.5)のライブラリインストール</summary>
+
+```zsh  
+cd server
+python -m pip install -r requirements.txt
+```
+</details>
+
 ### DBの起動
 
 ```zsh
