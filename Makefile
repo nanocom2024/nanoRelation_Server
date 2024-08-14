@@ -1,6 +1,6 @@
 # set system envrion for Windows
 ifeq ($(OS),Windows_NT)
-    GOOS := windows
+    OS := windows
 else
     UNAME_OS := $(shell uname -s)
     ifeq ($(UNAME_OS),Linux)
