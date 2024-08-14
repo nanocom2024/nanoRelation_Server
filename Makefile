@@ -12,8 +12,6 @@ else
     endif
 endif
 
-check-os:
-	@echo $(OS)
 
 db-start:
 	if [ $(OS) = "mac" ]; then \
