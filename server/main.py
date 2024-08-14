@@ -94,5 +94,46 @@ def signin():
     return jsonify({'token': res['idToken']}), 200
 
 
+@app.route('/signout', methods=['POST'])
+def signout():
+    token = request.json['token']
+
+    user = users.find_one({'token': token})
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    new_token = create_access_token(identity=user['token'])
+    users.update_one({'token': token}, {'$set': {'token': new_token}})
+
+    return jsonify({'done': 'success'}), 200
+
+
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    token = request.json['token']
+    password = request.json['password']
+    if not password:
+        return jsonify({'error': 'Missing password'}), 400
+    confirmPassword = request.json['confirmPassword']
+    if not confirmPassword:
+        return jsonify({'error': 'Missing confirmPassword'}), 400
+
+    if password != confirmPassword:
+        return jsonify({'error': 'Passwords do not match'}), 400
+
+    user = users.find_one({'token': token})
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    try:
+        auth.delete_user(user['uid'])
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+    users.delete_many({'uid': user['uid']})
+
+    return jsonify({'done': 'success'}), 200
+
+
 if __name__ == '__main__':
     app.run()
