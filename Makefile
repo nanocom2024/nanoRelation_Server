@@ -16,10 +16,18 @@ check-os:
 	@echo $(OS)
 
 db-start:
-	brew services start mongodb-community
+	if [ $(OS) = "mac" ]; then \
+		brew services start mongodb-community; \
+	elif [ $(OS) = "linux" ]; then \
+		sudo systemctl start mongod; \
+	fi
 
 db-stop:
-	brew services stop mongodb-community
+	if [ $(OS) = "mac" ]; then \
+		brew services stop mongodb-community; \
+	elif [ $(OS) = "linux" ]; then \
+		sudo systemctl stop mongod; \
+	fi
 
 server-start:
 	cd server && python main.py
