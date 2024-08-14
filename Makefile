@@ -1,29 +1,29 @@
 # set system envrion for Windows
 ifeq ($(OS),Windows_NT)
-    OS := windows
+    OS_NAME := windows
 else
     UNAME_OS := $(shell uname -s)
     ifeq ($(UNAME_OS),Linux)
-        OS := linux
+        OS_NAME := linux
     else ifeq ($(UNAME_OS),Darwin)
-        OS := mac
+        OS_NAME := mac
     else
-        OS:=unknown
+        OS_NAME:=unknown
     endif
 endif
 
 
 db-start:
-	if [ $(OS) = "mac" ]; then \
+	if [ $(OS_NAME) = "mac" ]; then \
 		brew services start mongodb-community; \
-	elif [ $(OS) = "linux" ]; then \
+	elif [ $(OS_NAME) = "linux" ]; then \
 		sudo systemctl start mongod; \
 	fi
 
 db-stop:
-	if [ $(OS) = "mac" ]; then \
+	if [ $(OS_NAME) = "mac" ]; then \
 		brew services stop mongodb-community; \
-	elif [ $(OS) = "linux" ]; then \
+	elif [ $(OS_NAME) = "linux" ]; then \
 		sudo systemctl stop mongod; \
 	fi
 
