@@ -223,5 +223,21 @@ def check_pairing():
     return jsonify({'done': 'success'}), 200
 
 
+@app.route('/auth_check', methods=['POST'])
+def auth_check():
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    user = users.find_one({'token': token})
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    new_token = create_access_token(identity=user['token'])
+    users.update_one({'token': token}, {'$set': {'token': new_token}})
+
+    return jsonify({'token': new_token}), 200
+
+
 if __name__ == '__main__':
     app.run()
