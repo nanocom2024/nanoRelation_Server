@@ -7,6 +7,7 @@ from os.path import join, dirname
 from flask_jwt_extended import JWTManager, create_access_token
 from pymongo import MongoClient
 from Auth import Auth
+from crypto.generate import generate_ed25519_keypair
 
 
 # Settings インスタンス
@@ -29,6 +30,7 @@ jwt = JWTManager(app)
 client = MongoClient("localhost", 27017)
 db = client["db"]
 users = db["users"]
+device_keys = db["device_keys"]
 
 
 @app.route('/signup', methods=['POST'])
@@ -133,6 +135,26 @@ def delete_account():
     users.delete_many({'uid': user['uid']})
 
     return jsonify({'done': 'success'}), 200
+
+
+@app.route('/generate_device_key', methods=['POST'])
+def generate_device_key():
+    uid = request.json['uid']
+    if not uid:
+        return jsonify({'error': 'Missing uid'}), 400
+
+    if device_keys.find_one({'uid': uid}):
+        return jsonify({'error': 'Device key already exists'}), 400
+
+    private_key, public_key = generate_ed25519_keypair()
+
+    device_keys.insert_one({
+        'uid': uid,
+        'private_key': private_key,
+        'public_key': public_key
+    })
+
+    return jsonify({'private_key': private_key, 'public_key': public_key}), 200
 
 
 if __name__ == '__main__':
