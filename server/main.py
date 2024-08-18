@@ -129,6 +129,15 @@ def delete_account():
     if not user:
         return jsonify({'error': 'Invalid token'}), 400
 
+    email = user['email']
+    # パスワードの認証
+    firebase_api_key = settings.firebase_api_key
+    res = Auth.sign_in_with_email_and_password(
+        firebase_api_key, email, password)
+
+    if 'error' in res:
+        return jsonify({'error': res['error']['message']}), 400
+
     try:
         auth.delete_user(user['uid'])
     except Exception as e:
