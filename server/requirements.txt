@@ -4,3 +4,4 @@ python-dotenv
 flask-jwt-extended
 pymongo
 cryptography
+pytest

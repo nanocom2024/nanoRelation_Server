@@ -25,6 +25,16 @@ JWT_SECRET_KEY = "example"
 pip install -r requirements.txt
 ```
 
+## for development
+
+### test
+
+サーバーを立ち上げてから実行してください
+
+```zsh
+make run-test
+```
+
 ### 参考
 
 [サーバーに Firebase Admin SDK を追加する](https://firebase.google.com/docs/admin/setup?hl=ja)
