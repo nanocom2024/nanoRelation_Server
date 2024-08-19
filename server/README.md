@@ -38,6 +38,12 @@ pip install -r requirements.txt
 make run-test
 ```
 
+urlを変更してテストを行う場合
+
+```zsh
+pytest --baseurl="input you url" tests/
+```
+
 ### 参考
 
 [サーバーに Firebase Admin SDK を追加する](https://firebase.google.com/docs/admin/setup?hl=ja)
