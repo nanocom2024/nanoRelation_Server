@@ -242,3 +242,5 @@ def test_delete_account_success(baseurl):
     users = db['users']
     assert not users.find_one({'token': token})
     assert not users.find_one({'email': email})
+
+    client.close()
