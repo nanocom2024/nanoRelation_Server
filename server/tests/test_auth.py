@@ -5,19 +5,19 @@ token = ''
 
 def test_signup_success(baseurl):
     global token
-    url = baseurl+'/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
         'password': 'password'
     })
-    token = res.json()['token']
     assert res.status_code == 200
+    token = res.json()['token']
     assert token
 
 
 def test_signup_missing_name(baseurl):
-    url = baseurl+'/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': '',
         'email': 'test@test.org',
@@ -28,7 +28,7 @@ def test_signup_missing_name(baseurl):
 
 
 def test_signup_missing_email(baseurl):
-    url = baseurl+'/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': '',
@@ -39,7 +39,7 @@ def test_signup_missing_email(baseurl):
 
 
 def test_signup_missing_password(baseurl):
-    url = baseurl+'/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
@@ -50,7 +50,7 @@ def test_signup_missing_password(baseurl):
 
 
 def test_signup_already_exist(baseurl):
-    url = baseurl+'/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
@@ -62,7 +62,7 @@ def test_signup_already_exist(baseurl):
 
 
 def test_signout_missing_token(baseurl):
-    url = baseurl+'/signout'
+    url = baseurl+'/auth/signout'
     res = requests.post(url, json={
         'token': ''
     })
@@ -71,7 +71,7 @@ def test_signout_missing_token(baseurl):
 
 
 def test_signout_invalid_token(baseurl):
-    url = baseurl+'/signout'
+    url = baseurl+'/auth/signout'
     res = requests.post(url, json={
         'token': 'invalidToken'
     })
@@ -81,7 +81,7 @@ def test_signout_invalid_token(baseurl):
 
 def test_signout_success(baseurl):
     global token
-    url = baseurl+'/signout'
+    url = baseurl+'/auth/signout'
     res = requests.post(url, json={
         'token': token
     })
@@ -91,18 +91,18 @@ def test_signout_success(baseurl):
 
 def test_signin_success(baseurl):
     global token
-    url = baseurl+'/signin'
+    url = baseurl+'/auth/signin'
     res = requests.post(url, json={
         'email': 'test@test.org',
         'password': 'password'
     })
-    token = res.json()['token']
     assert res.status_code == 200
+    token = res.json()['token']
     assert token
 
 
 def test_signin_missing_email(baseurl):
-    url = baseurl+'/signin'
+    url = baseurl+'/auth/signin'
     res = requests.post(url, json={
         'email': '',
         'password': 'password'
@@ -112,7 +112,7 @@ def test_signin_missing_email(baseurl):
 
 
 def test_signin_missing_password(baseurl):
-    url = baseurl+'/signin'
+    url = baseurl+'/auth/signin'
     res = requests.post(url, json={
         'email': 'test@test.org',
         'password': ''
@@ -122,7 +122,7 @@ def test_signin_missing_password(baseurl):
 
 
 def test_signin_wrong_email(baseurl):
-    url = baseurl+'/signin'
+    url = baseurl+'/auth/signin'
     res = requests.post(url, json={
         'email': 'wrongEmail@test.org',
         'password': 'password'
@@ -133,7 +133,7 @@ def test_signin_wrong_email(baseurl):
 
 
 def test_signin_wrong_password(baseurl):
-    url = baseurl+'/signin'
+    url = baseurl+'/auth/signin'
     res = requests.post(url, json={
         'email': 'test@test.org',
         'password': 'wrongPassword'
@@ -145,7 +145,7 @@ def test_signin_wrong_password(baseurl):
 
 def test_delete_account_missing_password(baseurl):
     global token
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': '',
         'confirmPassword': 'password',
@@ -157,7 +157,7 @@ def test_delete_account_missing_password(baseurl):
 
 def test_delete_account_missing_confirm_password(baseurl):
     global token
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': 'password',
         'confirmPassword': '',
@@ -168,7 +168,7 @@ def test_delete_account_missing_confirm_password(baseurl):
 
 
 def test_delete_account_missing_token(baseurl):
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'password',
@@ -180,7 +180,7 @@ def test_delete_account_missing_token(baseurl):
 
 def test_delete_account_passwords_do_not_match(baseurl):
     global token
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'wrongPassword',
@@ -191,7 +191,7 @@ def test_delete_account_passwords_do_not_match(baseurl):
 
 
 def test_delete_account_invalid_token(baseurl):
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'password',
@@ -203,7 +203,7 @@ def test_delete_account_invalid_token(baseurl):
 
 def test_delete_account_invalid_password(baseurl):
     global token
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     res = requests.post(url, json={
         'password': 'invalidPassword',
         'confirmPassword': 'invalidPassword',
@@ -215,7 +215,7 @@ def test_delete_account_invalid_password(baseurl):
 
 def test_delete_account_success(baseurl):
     global token
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
 
     res = requests.post(url, json={
         'password': 'password',

@@ -9,7 +9,7 @@ token = ''
 def test_generate_device_key_success(baseurl):
     global private_key
     global public_key
-    url = baseurl+'/generate_device_key'
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
@@ -21,7 +21,7 @@ def test_generate_device_key_success(baseurl):
 
 
 def test_generate_device_key_missing_uid(baseurl):
-    url = baseurl+'/generate_device_key'
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': '',
     })
@@ -30,7 +30,7 @@ def test_generate_device_key_missing_uid(baseurl):
 
 
 def test_generate_device_key_already_exists(baseurl):
-    url = baseurl+'/generate_device_key'
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
@@ -39,7 +39,7 @@ def test_generate_device_key_already_exists(baseurl):
 
 
 def get_token(baseurl):
-    url = baseurl+'/signup'
+    url = baseurl+'/pairing/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
@@ -52,7 +52,7 @@ def get_token(baseurl):
 def test_register_pairing_success(baseurl):
     global token
     global public_key
-    url = baseurl+'/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     token = get_token(baseurl)
     res = requests.post(url, json={
         'token': token,
@@ -64,7 +64,7 @@ def test_register_pairing_success(baseurl):
 
 def test_register_pairing_missing_token(baseurl):
     global public_key
-    url = baseurl+'/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': '',
         'public_key': public_key
@@ -75,7 +75,7 @@ def test_register_pairing_missing_token(baseurl):
 
 def test_register_pairing_missing_public_key(baseurl):
     global token
-    url = baseurl+'/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
         'public_key': ''
@@ -86,7 +86,7 @@ def test_register_pairing_missing_public_key(baseurl):
 
 def test_register_pairing_invalid_token(baseurl):
     global public_key
-    url = baseurl+'/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': 'invalidToken',
         'public_key': public_key
@@ -97,7 +97,7 @@ def test_register_pairing_invalid_token(baseurl):
 
 def test_register_pairing_invalid_public_key(baseurl):
     global token
-    url = baseurl+'/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
         'public_key': 'invalidPublicKey'
@@ -108,7 +108,7 @@ def test_register_pairing_invalid_public_key(baseurl):
 
 def test_check_pairing_missing_token(baseurl):
     global private_key
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': '',
         'private_key': private_key
@@ -119,7 +119,7 @@ def test_check_pairing_missing_token(baseurl):
 
 def test_check_pairing_missing_private_key(baseurl):
     global token
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': ''
@@ -130,7 +130,7 @@ def test_check_pairing_missing_private_key(baseurl):
 
 def test_check_pairing_invalid_token(baseurl):
     global private_key
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': 'invalidToken',
         'private_key': private_key
@@ -141,7 +141,7 @@ def test_check_pairing_invalid_token(baseurl):
 
 def test_check_pairing_invalid_private_key(baseurl):
     global token
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': 'invalidPrivateKey'
@@ -153,7 +153,7 @@ def test_check_pairing_invalid_private_key(baseurl):
 def test_check_pairing_success(baseurl):
     global token
     global private_key
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': private_key
@@ -165,7 +165,7 @@ def test_check_pairing_success(baseurl):
 def test_check_pairing_invalid_pairing(baseurl):
     global token
     global private_key
-    url = baseurl+'/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': private_key
@@ -176,7 +176,7 @@ def test_check_pairing_invalid_pairing(baseurl):
 
 def test_auth_check_success(baseurl):
     global token
-    url = baseurl+'/auth_check'
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': token
     })
@@ -186,7 +186,7 @@ def test_auth_check_success(baseurl):
 
 
 def test_auth_check_missing_token(baseurl):
-    url = baseurl+'/auth_check'
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': ''
     })
@@ -195,7 +195,7 @@ def test_auth_check_missing_token(baseurl):
 
 
 def test_auth_check_invalid_token(baseurl):
-    url = baseurl+'/auth_check'
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': 'invalidToken'
     })
@@ -222,7 +222,7 @@ def test_done(baseurl):
     pairings.delete_many({'uid': user['uid']})
     assert not pairings.find_one({'uid': user['uid']})
 
-    url = baseurl+'/delete_account'
+    url = baseurl+'/auth/delete_account'
     requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'password',
