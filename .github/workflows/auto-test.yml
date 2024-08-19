@@ -1,4 +1,4 @@
-on: [pull_request]
+on: [pull_request, workflow_dispatch]
 jobs:
   auto_test:
     name: Auto Test nanoRelation Server
