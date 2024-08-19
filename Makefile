@@ -28,4 +28,4 @@ db-stop:
 	fi
 
 server-start:
-	cd server && python main.py
+	cd server/src && python main.py

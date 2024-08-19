@@ -11,10 +11,11 @@ from crypto.generate import generate_ed25519_keypair
 
 
 # Settings インスタンス
-settings = Settings(join(dirname(__file__), '.env'))
+print(join(dirname(__file__), '.env'))
+settings = Settings(join(dirname(__file__), '../.env'))
 
 # app
-path_to_firebase_json = settings.path_to_firebase_json
+path_to_firebase_json = './../' + settings.path_to_firebase_json
 cred = credentials.Certificate(path_to_firebase_json)
 firebase_admin.initialize_app(cred)
 app = Flask(__name__)
