@@ -1,6 +1,6 @@
 name: Auto Test nanoRelation Server
 
-on: [pull_request, workflow_dispatch]
+on: [pull_request]
 
 jobs:
   auto_test:
@@ -10,7 +10,6 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v4
-      run: cd server
 
     - name: setup python
       uses: actions/setup-python@v5.1.1
@@ -19,6 +18,7 @@ jobs:
     
     - name: Install dependencies
       run: |
+        cd server
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
