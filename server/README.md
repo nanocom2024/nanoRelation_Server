@@ -13,16 +13,29 @@ FirebaseのAuthenticationを用いています
 ```env
 PATH_TO_FIREBASE_JSON = "example"
 JWT_SECRET_KEY = "example"
+FIREBASE_API_KEY = "example"
 ```
 
 ・Firebase Authenticationに従ってsdkのjsonを配置して，パスを設定してください
 
 ・serverの秘密鍵の設定もしてください
 
+・firebaseのAPIキーも設定してください
+
 ### ライブラリのインストール
 
 ```zsh
 pip install -r requirements.txt
+```
+
+## for development
+
+### test
+
+サーバーを立ち上げてから実行してください
+
+```zsh
+make run-test
 ```
 
 ### 参考

@@ -1,0 +1,2 @@
+run-test:
+	pytest tests/
