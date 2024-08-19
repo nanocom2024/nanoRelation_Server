@@ -29,11 +29,9 @@ jobs:
         mongodb-replica-set: test-rs
     
     - name: Start Server
-      run: |
-        cd server
-        python main.py
+      run: make server-start
 
     - name: Run tests
       run: |
         cd server
-        python -m pytest tests/
+        make run-test
