@@ -1,0 +1,5 @@
+on: [pull_request]
+jobs:
+    auto_test:
+        name: Auto Test nanoRelation Server
+        runs-on: ubuntu-latest
