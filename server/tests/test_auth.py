@@ -1,16 +1,6 @@
 import requests
-import pytest
 
 token = ''
-
-def pytest_addoption(parser):
-    parser.addoption('--baseurl', # オプション名
-                    default='http://127.0.0.1:8181' # デフォルト値
-                    )
-
-@pytest.fixture
-def baseurl(request):
-    return request.config.getoption("--baseurl")
 
 
 def test_signup_success(baseurl):

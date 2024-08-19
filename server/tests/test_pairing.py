@@ -1,20 +1,9 @@
 import requests
 from pymongo import MongoClient
 
-import pytest
-
 private_key = ''
 public_key = ''
 token = ''
-
-def pytest_addoption(parser):
-    parser.addoption('--baseurl', # オプション名
-                    default='http://127.0.0.1:8181' # デフォルト値
-                    )
-
-@pytest.fixture
-def baseurl(request):
-    return request.config.getoption("--baseurl")
 
 
 def test_generate_device_key_success(baseurl):
@@ -64,7 +53,7 @@ def test_register_pairing_success(baseurl):
     global token
     global public_key
     url = baseurl+'/register_pairing'
-    token = get_token()
+    token = get_token(baseurl)
     res = requests.post(url, json={
         'token': token,
         'public_key': public_key
