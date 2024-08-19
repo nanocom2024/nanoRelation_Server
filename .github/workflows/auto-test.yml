@@ -10,6 +10,7 @@ jobs:
     steps:
     - name: Git checkout
       uses: actions/checkout@v4
+      run: cd server
 
     - name: setup python
       uses: actions/setup-python@v5.1.1
@@ -28,6 +29,4 @@ jobs:
         mongodb-replica-set: replset
     
     - name: Run tests
-      run: |
-        cd server
-        python -m pytest tests/
+      run: python -m pytest tests/
