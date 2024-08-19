@@ -1,9 +1,13 @@
+import random
+import string
 import requests
 from pymongo import MongoClient
 
 private_key = ''
 public_key = ''
 token = ''
+email = ''.join(random.choices(string.ascii_lowercase +
+                string.digits, k=20))+'@test.org'
 
 
 def test_generate_device_key_success(baseurl):
@@ -39,10 +43,11 @@ def test_generate_device_key_already_exists(baseurl):
 
 
 def get_token(baseurl):
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     token = res.json()['token']
@@ -230,5 +235,6 @@ def test_done(baseurl):
     })
     users.delete_many({'token': token})
     assert not users.find_one({'token': token})
+    assert not users.find_one({'email': email})
 
     client.close()
