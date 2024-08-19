@@ -1,10 +1,10 @@
 on: [pull_request]
 jobs:
-    auto_test:
-        name: Auto Test nanoRelation Server
-        runs-on: ubuntu-latest
+  auto_test:
+    name: Auto Test nanoRelation Server
+    runs-on: ubuntu-latest
 
-        steps:
-          - name: Git checkout
-            uses: actions/checkout@v4
-          
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v4
+
