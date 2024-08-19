@@ -11,7 +11,6 @@ from crypto.generate import generate_ed25519_keypair
 
 
 # Settings インスタンス
-print(join(dirname(__file__), '.env'))
 settings = Settings(join(dirname(__file__), '../.env'))
 
 # app
