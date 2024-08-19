@@ -39,7 +39,7 @@ def test_generate_device_key_already_exists():
 
 
 def get_token():
-    url = 'http://127.0.0.1:5000/signup'
+    url = 'http://127.0.0.1:5000/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
@@ -222,7 +222,7 @@ def test_done():
     pairings.delete_many({'uid': user['uid']})
     assert not pairings.find_one({'uid': user['uid']})
 
-    url = 'http://127.0.0.1:5000/delete_account'
+    url = 'http://127.0.0.1:5000/auth/delete_account'
     requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'password',
