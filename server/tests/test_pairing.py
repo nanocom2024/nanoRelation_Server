@@ -39,7 +39,7 @@ def test_generate_device_key_already_exists(baseurl):
 
 
 def get_token(baseurl):
-    url = baseurl+'/pairing/signup'
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
