@@ -27,11 +27,18 @@ jobs:
       with:
         mongodb-version: '6.0'
         mongodb-replica-set: test-rs
+
+    - name: create-json
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "nanorelation-firebase-adminsdk.json"
+        json: ${{ secrets.FIREBASE_ADMINSDK }}
+        dir: "server/"
     
     - name: Start Server
       run: |
         echo `${{ secrets.DOT_ENV }}` > server/.env
-        echo `${{ secrets.FIREBASE_ADMINSDK }}` > server/nanorelation-firebase-adminsdk.json
         make server-start
 
     - name: Run tests
