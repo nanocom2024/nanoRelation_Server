@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '../')))
-from crypto.generate import generate_ed25519_keypair
+from src.crypto.generate import generate_ed25519_keypair
 
 
 def test_generate_keypair():

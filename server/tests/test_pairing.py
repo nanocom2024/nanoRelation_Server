@@ -6,10 +6,10 @@ public_key = ''
 token = ''
 
 
-def test_generate_device_key_success():
+def test_generate_device_key_success(baseurl):
     global private_key
     global public_key
-    url = 'http://127.0.0.1:5000/generate_device_key'
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
@@ -20,8 +20,8 @@ def test_generate_device_key_success():
     assert public_key
 
 
-def test_generate_device_key_missing_uid():
-    url = 'http://127.0.0.1:5000/generate_device_key'
+def test_generate_device_key_missing_uid(baseurl):
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': '',
     })
@@ -29,8 +29,8 @@ def test_generate_device_key_missing_uid():
     assert res.json()['error'] == 'Missing uid'
 
 
-def test_generate_device_key_already_exists():
-    url = 'http://127.0.0.1:5000/generate_device_key'
+def test_generate_device_key_already_exists(baseurl):
+    url = baseurl+'/pairing/generate_device_key'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
@@ -38,8 +38,8 @@ def test_generate_device_key_already_exists():
     assert res.json()['error'] == 'Device key already exists'
 
 
-def get_token():
-    url = 'http://127.0.0.1:5000/signup'
+def get_token(baseurl):
+    url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
         'email': 'test@test.org',
@@ -49,11 +49,11 @@ def get_token():
     return token
 
 
-def test_register_pairing_success():
+def test_register_pairing_success(baseurl):
     global token
     global public_key
-    url = 'http://127.0.0.1:5000/register_pairing'
-    token = get_token()
+    url = baseurl+'/pairing/register_pairing'
+    token = get_token(baseurl)
     res = requests.post(url, json={
         'token': token,
         'public_key': public_key
@@ -62,9 +62,9 @@ def test_register_pairing_success():
     assert res.json()['done'] == 'pre_pairing'
 
 
-def test_register_pairing_missing_token():
+def test_register_pairing_missing_token(baseurl):
     global public_key
-    url = 'http://127.0.0.1:5000/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': '',
         'public_key': public_key
@@ -73,9 +73,9 @@ def test_register_pairing_missing_token():
     assert res.json()['error'] == 'Missing token'
 
 
-def test_register_pairing_missing_public_key():
+def test_register_pairing_missing_public_key(baseurl):
     global token
-    url = 'http://127.0.0.1:5000/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
         'public_key': ''
@@ -84,9 +84,9 @@ def test_register_pairing_missing_public_key():
     assert res.json()['error'] == 'Missing public_key'
 
 
-def test_register_pairing_invalid_token():
+def test_register_pairing_invalid_token(baseurl):
     global public_key
-    url = 'http://127.0.0.1:5000/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': 'invalidToken',
         'public_key': public_key
@@ -95,9 +95,9 @@ def test_register_pairing_invalid_token():
     assert res.json()['error'] == 'Invalid token'
 
 
-def test_register_pairing_invalid_public_key():
+def test_register_pairing_invalid_public_key(baseurl):
     global token
-    url = 'http://127.0.0.1:5000/register_pairing'
+    url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
         'public_key': 'invalidPublicKey'
@@ -106,9 +106,9 @@ def test_register_pairing_invalid_public_key():
     assert res.json()['error'] == 'Invalid public_key'
 
 
-def test_check_pairing_missing_token():
+def test_check_pairing_missing_token(baseurl):
     global private_key
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': '',
         'private_key': private_key
@@ -117,9 +117,9 @@ def test_check_pairing_missing_token():
     assert res.json()['error'] == 'Missing token'
 
 
-def test_check_pairing_missing_private_key():
+def test_check_pairing_missing_private_key(baseurl):
     global token
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': ''
@@ -128,9 +128,9 @@ def test_check_pairing_missing_private_key():
     assert res.json()['error'] == 'Missing private_key'
 
 
-def test_check_pairing_invalid_token():
+def test_check_pairing_invalid_token(baseurl):
     global private_key
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': 'invalidToken',
         'private_key': private_key
@@ -139,9 +139,9 @@ def test_check_pairing_invalid_token():
     assert res.json()['error'] == 'Invalid token'
 
 
-def test_check_pairing_invalid_private_key():
+def test_check_pairing_invalid_private_key(baseurl):
     global token
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': 'invalidPrivateKey'
@@ -150,10 +150,10 @@ def test_check_pairing_invalid_private_key():
     assert res.json()['error'] == 'Invalid private_key'
 
 
-def test_check_pairing_success():
+def test_check_pairing_success(baseurl):
     global token
     global private_key
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': private_key
@@ -162,10 +162,10 @@ def test_check_pairing_success():
     assert res.json()['done'] == 'success'
 
 
-def test_check_pairing_invalid_pairing():
+def test_check_pairing_invalid_pairing(baseurl):
     global token
     global private_key
-    url = 'http://127.0.0.1:5000/check_pairing'
+    url = baseurl+'/pairing/check_pairing'
     res = requests.post(url, json={
         'token': token,
         'private_key': private_key
@@ -174,9 +174,9 @@ def test_check_pairing_invalid_pairing():
     assert res.json()['error'] == 'Invalid pairing'
 
 
-def test_auth_check_success():
+def test_auth_check_success(baseurl):
     global token
-    url = 'http://127.0.0.1:5000/auth_check'
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': token
     })
@@ -185,8 +185,8 @@ def test_auth_check_success():
     assert token
 
 
-def test_auth_check_missing_token():
-    url = 'http://127.0.0.1:5000/auth_check'
+def test_auth_check_missing_token(baseurl):
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': ''
     })
@@ -194,8 +194,8 @@ def test_auth_check_missing_token():
     assert res.json()['error'] == 'Missing token'
 
 
-def test_auth_check_invalid_token():
-    url = 'http://127.0.0.1:5000/auth_check'
+def test_auth_check_invalid_token(baseurl):
+    url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
         'token': 'invalidToken'
     })
@@ -203,7 +203,7 @@ def test_auth_check_invalid_token():
     assert res.json()['error'] == 'Invalid token'
 
 
-def test_done():
+def test_done(baseurl):
     global token
     client = MongoClient('localhost', 27017)
     db = client['db']
@@ -222,7 +222,7 @@ def test_done():
     pairings.delete_many({'uid': user['uid']})
     assert not pairings.find_one({'uid': user['uid']})
 
-    url = 'http://127.0.0.1:5000/delete_account'
+    url = baseurl+'/auth/delete_account'
     requests.post(url, json={
         'password': 'password',
         'confirmPassword': 'password',
