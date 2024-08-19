@@ -13,11 +13,14 @@ FirebaseのAuthenticationを用いています
 ```env
 PATH_TO_FIREBASE_JSON = "example"
 JWT_SECRET_KEY = "example"
+FIREBASE_API_KEY = "example"
 ```
 
 ・Firebase Authenticationに従ってsdkのjsonを配置して，パスを設定してください
 
 ・serverの秘密鍵の設定もしてください
+
+・firebaseのAPIキーも設定してください
 
 ### ライブラリのインストール
 
