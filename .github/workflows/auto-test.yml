@@ -30,8 +30,8 @@ jobs:
     
     - name: Start Server
       run: |
-        echo ${{ secrets.DOT_ENV }} > server/.env
-        echo ${{ secrets.FIREBASE_ADMINSDK }} > server/nanorelation-firebase-adminsdk.json
+        echo `${{ secrets.DOT_ENV }}` > server/.env
+        echo `${{ secrets.FIREBASE_ADMINSDK }}` > server/nanorelation-firebase-adminsdk.json
         make server-start
 
     - name: Run tests
