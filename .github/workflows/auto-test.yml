@@ -29,7 +29,10 @@ jobs:
         mongodb-replica-set: test-rs
     
     - name: Start Server
-      run: make server-start
+      run: |
+        echo ${{ secrets.DOT_ENV }} > server/.env
+        echo ${{ secrets.FIREBASE_ADMINSDK }} server/nanorelation-firebase-adminsdk.json
+        make server-start
 
     - name: Run tests
       run: |
