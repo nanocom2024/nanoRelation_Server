@@ -33,7 +33,7 @@ jobs:
 
     - name: create json
       id: create-json
-      uses: jsdaniell/create-json@v1.2.2
+      uses: jsdaniell/create-json@v1.2.3
       with:
         name: "nanorelation-firebase-adminsdk.json"
         json: ${{ secrets.FIREBASE_ADMINSDK }}
