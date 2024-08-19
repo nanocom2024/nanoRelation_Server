@@ -26,13 +26,6 @@ app.config['JWT_ALGORITHM'] = 'HS256'                       # 暗号化署名の
 # jwt manager
 jwt = JWTManager(app)
 
-# MongoDBに接続
-db = DB()
-users = db.users
-device_keys = db.device_keys
-pre_pairings = db.pre_pairings
-pairings = db.pairings
-
 
 # Blueprint
 app.register_blueprint(AUTH_BP)
@@ -40,4 +33,4 @@ app.register_blueprint(PAIRING_BP)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host="0.0.0.0", port=8181)
