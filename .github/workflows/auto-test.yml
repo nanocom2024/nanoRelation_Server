@@ -44,7 +44,7 @@ jobs:
     
     - name: Start Server
       run: |
-        screen -d -m -S server bash -c "make server-start"
+        screen -d -m -S server bash -c "make server-start"; sleep 3
 
     - name: Run tests
       run: |
