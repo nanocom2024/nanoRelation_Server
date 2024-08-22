@@ -244,6 +244,16 @@ def test_done(baseurl):
     assert log_passes.find_one(data) is not None
     log_passes.delete_many(data)
 
+    client.close()
+
+
+def test_cleanup_users(baseurl):
+    global token1, email1
+    global token2, email2
+    client = MongoClient('localhost', 27017)
+    db = client['db']
+    users = db['users']
+
     url = baseurl+'/auth/delete_account'
     requests.post(url, json={
         'password': 'password',
