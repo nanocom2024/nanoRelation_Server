@@ -170,7 +170,7 @@ def test_received_beacon_invalid_private_key(baseurl):
     assert res.json()['error'] == 'Invalid private_key'
 
 
-def test_received_beacon_success(baseurl):
+def test_received_beacon_enable_success(baseurl):
     global private_key1
     global public_key2
     url = baseurl+'/streetpass/received_beacon'
@@ -191,7 +191,33 @@ def test_received_beacon_success(baseurl):
     assert res.json()['pass'] == 'true'
 
 
-def test_done(baseurl):
+def test_received_beacon_disable_success(baseurl):
+    global token1, private_key1, public_key2
+    global token2, private_key2, public_key1
+    client = MongoClient('localhost', 27017)
+    db = client['db']
+    users = db['users']
+    user2 = users.find_one({'token': token2})
+    assert user2
+
+    url = baseurl+'/notification/disable_notification'
+    res = requests.post(url, json={
+        'token': token1,
+        'disable_uid': user2['uid']
+    })
+    assert res.status_code == 200
+    assert res.json()['done'] == 'disable'
+
+    url = baseurl+'/streetpass/received_beacon'
+    res = requests.post(url, json={
+        'received_public_key': public_key2,
+        'private_key': private_key1
+    })
+    assert res.status_code == 200
+    assert res.json()['pass'] == 'false'
+
+
+def test_done():
     global token1, device_uid1, email1
     global token2, device_uid2, email2
     client = MongoClient('localhost', 27017)

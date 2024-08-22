@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from DB import DB
 import datetime
+from StreetPass.NotificationModel import check_notification_allowed
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -36,9 +37,9 @@ def received_beacon():
     uid1 = min(received_user['uid'], sent_user['uid'])
     uid2 = max(received_user['uid'], sent_user['uid'])
 
-    if now_passes.find_one({'uid1': uid1, 'uid2': uid2}):
+    if now_passes.find_one({'uid1': uid1, 'uid2': uid2}) and check_notification_allowed(sent_user, received_user):
         return jsonify({'pass': 'true'}), 200
-    if pre_passes.find_one({'sent_uid': received_user['uid'], 'received_uid': sent_user['uid']}):
+    if pre_passes.find_one({'sent_uid': received_user['uid'], 'received_uid': sent_user['uid']}) and check_notification_allowed(sent_user, received_user):
         data = {
             'uid1': uid1,
             'uid2': uid2,
