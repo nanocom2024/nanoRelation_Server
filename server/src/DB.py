@@ -10,6 +10,10 @@ class DB:
         self.__device_keys = db["device_keys"]
         self.__pre_pairings = db["pre_pairings"]
         self.__pairings = db["pairings"]
+        self.__pre_passes = db["pre_passes"]
+        self.__now_passes = db["now_passes"]
+        self.__log_passes = db["log_passes"]
+        self.__notification_config = db["notification_config"]
 
     # users
     @property
@@ -30,3 +34,23 @@ class DB:
     @property
     def pairings(self):
         return self.__pairings
+
+    # pre_passes
+    @property
+    def pre_passes(self):
+        return self.__pre_passes
+
+    # now_passes
+    @property
+    def now_passes(self):
+        return self.__now_passes
+
+    # log_passes
+    @property
+    def log_passes(self):
+        return self.__log_passes
+
+    # notification_config
+    @property
+    def notification_config(self):
+        return self.__notification_config

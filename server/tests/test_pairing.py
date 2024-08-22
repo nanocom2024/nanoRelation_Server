@@ -210,6 +210,7 @@ def test_auth_check_invalid_token(baseurl):
 
 def test_done(baseurl):
     global token
+    global email
     client = MongoClient('localhost', 27017)
     db = client['db']
 

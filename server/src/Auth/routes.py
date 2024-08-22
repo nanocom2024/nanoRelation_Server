@@ -14,9 +14,6 @@ settings = Settings(join(dirname(__file__), '../../.env'))
 # MongoDBに接続
 db = DB()
 users = db.users
-device_keys = db.device_keys
-pre_pairings = db.pre_pairings
-pairings = db.pairings
 
 
 @AUTH_BP.route('/signup', methods=['POST'])

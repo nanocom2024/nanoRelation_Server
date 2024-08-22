@@ -8,6 +8,8 @@ from flask_jwt_extended import JWTManager
 from DB import DB
 from Auth.routes import AUTH_BP
 from Pairing.routes import PAIRING_BP
+from StreetPass.routes import STREETPASS_BP
+from Notification.routes import NOTIFICATION_BP
 
 
 # Settings インスタンス
@@ -30,6 +32,8 @@ jwt = JWTManager(app)
 # Blueprint
 app.register_blueprint(AUTH_BP)
 app.register_blueprint(PAIRING_BP)
+app.register_blueprint(STREETPASS_BP)
+app.register_blueprint(NOTIFICATION_BP)
 
 
 if __name__ == '__main__':
