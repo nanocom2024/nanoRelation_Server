@@ -13,6 +13,7 @@ class DB:
         self.__pre_passes = db["pre_passes"]
         self.__now_passes = db["now_passes"]
         self.__log_passes = db["log_passes"]
+        self.__notification_config = db["notification_config"]
 
     # users
     @property
@@ -48,3 +49,8 @@ class DB:
     @property
     def log_passes(self):
         return self.__log_passes
+
+    # notification_config
+    @property
+    def notification_config(self):
+        return self.__notification_config
