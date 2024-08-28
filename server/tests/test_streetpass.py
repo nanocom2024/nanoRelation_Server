@@ -82,7 +82,7 @@ def test_pairing_success(baseurl):
         'public_key': public_key1
     })
     assert res.status_code == 200
-    assert res.json()['done'] == 'pre_pairing'
+    assert res.json()['done'] == 'pairing'
 
     global token2
     global private_key2
@@ -92,23 +92,7 @@ def test_pairing_success(baseurl):
         'public_key': public_key2
     })
     assert res.status_code == 200
-    assert res.json()['done'] == 'pre_pairing'
-
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token1,
-        'private_key': private_key1
-    })
-    assert res.status_code == 200
-    assert res.json()['done'] == 'success'
-
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token2,
-        'private_key': private_key2
-    })
-    assert res.status_code == 200
-    assert res.json()['done'] == 'success'
+    assert res.json()['done'] == 'pairing'
 
     url = baseurl+'/pairing/auth_check'
     res = requests.post(url, json={
@@ -232,11 +216,6 @@ def test_done():
     users = db['users']
     user1 = users.find_one({'token': token1})
     user2 = users.find_one({'token': token2})
-    pre_pairings = db['pre_pairings']
-    pre_pairings.delete_many({'uid': user1['uid']})
-    assert not pre_pairings.find_one({'uid': user1['uid']})
-    pre_pairings.delete_many({'uid': user2['uid']})
-    assert not pre_pairings.find_one({'uid': user2['uid']})
 
     pairings = db['pairings']
     pairings.delete_many({'uid': user1['uid']})
