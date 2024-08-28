@@ -8,7 +8,6 @@ class DB:
         db = client["db"]
         self.__users = db["users"]
         self.__device_keys = db["device_keys"]
-        self.__pre_pairings = db["pre_pairings"]
         self.__pairings = db["pairings"]
         self.__pre_passes = db["pre_passes"]
         self.__now_passes = db["now_passes"]
@@ -24,11 +23,6 @@ class DB:
     @property
     def device_keys(self):
         return self.__device_keys
-
-    # pre_pairings
-    @property
-    def pre_pairings(self):
-        return self.__pre_pairings
 
     # pairings
     @property
