@@ -1,14 +1,20 @@
+import random
+import string
 import requests
+from pymongo import MongoClient
 
 token = ''
+email = ''.join(random.choices(string.ascii_lowercase +
+                string.digits, k=20))+'@test.org'
 
 
 def test_signup_success(baseurl):
     global token
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     assert res.status_code == 200
@@ -17,10 +23,11 @@ def test_signup_success(baseurl):
 
 
 def test_signup_missing_name(baseurl):
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': '',
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     assert res.status_code == 400
@@ -39,10 +46,11 @@ def test_signup_missing_email(baseurl):
 
 
 def test_signup_missing_password(baseurl):
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
-        'email': 'test@test.org',
+        'email': email,
         'password': ''
     })
     assert res.status_code == 400
@@ -50,10 +58,11 @@ def test_signup_missing_password(baseurl):
 
 
 def test_signup_already_exist(baseurl):
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     assert res.status_code == 400
@@ -91,9 +100,10 @@ def test_signout_success(baseurl):
 
 def test_signin_success(baseurl):
     global token
+    global email
     url = baseurl+'/auth/signin'
     res = requests.post(url, json={
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     assert res.status_code == 200
@@ -112,9 +122,10 @@ def test_signin_missing_email(baseurl):
 
 
 def test_signin_missing_password(baseurl):
+    global email
     url = baseurl+'/auth/signin'
     res = requests.post(url, json={
-        'email': 'test@test.org',
+        'email': email,
         'password': ''
     })
     assert res.status_code == 400
@@ -133,9 +144,10 @@ def test_signin_wrong_email(baseurl):
 
 
 def test_signin_wrong_password(baseurl):
+    global email
     url = baseurl+'/auth/signin'
     res = requests.post(url, json={
-        'email': 'test@test.org',
+        'email': email,
         'password': 'wrongPassword'
     })
     assert res.status_code == 400
@@ -224,3 +236,11 @@ def test_delete_account_success(baseurl):
     })
     assert res.status_code == 200
     assert res.json()['done'] == 'success'
+
+    client = MongoClient('localhost', 27017)
+    db = client['db']
+    users = db['users']
+    assert not users.find_one({'token': token})
+    assert not users.find_one({'email': email})
+
+    client.close()

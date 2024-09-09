@@ -1,0 +1,56 @@
+name: Auto Test nanoRelation Server
+
+on: [pull_request, workflow_dispatch]
+
+jobs:
+  auto_test:
+    name: Auto Test nanoRelation Server
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Git checkout
+      uses: actions/checkout@v4
+    
+    - name: install screen
+      run: sudo apt-get install -y screen
+
+    - name: setup python
+      uses: actions/setup-python@v5.1.1
+      with:
+        python-version: '3.11.5'
+    
+    - name: Install dependencies
+      run: |
+        cd server
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.11.0
+      with:
+        mongodb-version: '6.0'
+        mongodb-replica-set: test-rs
+
+    - name: create json
+      id: create-json
+      uses: jsdaniell/create-json@v1.2.3
+      with:
+        name: "nanorelation-firebase-adminsdk.json"
+        json: ${{ secrets.FIREBASE_ADMINSDK }}
+        dir: "server/"
+
+    - name: Init env
+      run: echo "${{ secrets.DOT_ENV }}" > server/.env
+    
+    - name: Start Server
+      run: |
+        screen -d -m -S server bash -c "make server-start"; sleep 3
+
+    - name: Run tests
+      run: |
+        cd server
+        make run-test
+
+    - name: Stop Server
+      run: |
+        screen -S server -X quit

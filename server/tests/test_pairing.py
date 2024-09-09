@@ -1,9 +1,13 @@
+import random
+import string
 import requests
 from pymongo import MongoClient
 
 private_key = ''
 public_key = ''
 token = ''
+email = ''.join(random.choices(string.ascii_lowercase +
+                string.digits, k=20))+'@test.org'
 
 
 def test_generate_device_key_success(baseurl):
@@ -39,10 +43,11 @@ def test_generate_device_key_already_exists(baseurl):
 
 
 def get_token(baseurl):
+    global email
     url = baseurl+'/auth/signup'
     res = requests.post(url, json={
         'name': 'test',
-        'email': 'test@test.org',
+        'email': email,
         'password': 'password'
     })
     token = res.json()['token']
@@ -59,7 +64,17 @@ def test_register_pairing_success(baseurl):
         'public_key': public_key
     })
     assert res.status_code == 200
-    assert res.json()['done'] == 'pre_pairing'
+    assert res.json()['done'] == 'pairing'
+
+    client = MongoClient('localhost', 27017)
+    db = client['db']
+    pairings = db['pairings']
+    users = db['users']
+
+    user = users.find_one({'token': token})
+    pairing = pairings.find_one(
+        {'uid': user['uid'], 'public_key': public_key, 'private_key': private_key})
+    assert pairing
 
 
 def test_register_pairing_missing_token(baseurl):
@@ -106,74 +121,6 @@ def test_register_pairing_invalid_public_key(baseurl):
     assert res.json()['error'] == 'Invalid public_key'
 
 
-def test_check_pairing_missing_token(baseurl):
-    global private_key
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': '',
-        'private_key': private_key
-    })
-    assert res.status_code == 400
-    assert res.json()['error'] == 'Missing token'
-
-
-def test_check_pairing_missing_private_key(baseurl):
-    global token
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token,
-        'private_key': ''
-    })
-    assert res.status_code == 400
-    assert res.json()['error'] == 'Missing private_key'
-
-
-def test_check_pairing_invalid_token(baseurl):
-    global private_key
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': 'invalidToken',
-        'private_key': private_key
-    })
-    assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid token'
-
-
-def test_check_pairing_invalid_private_key(baseurl):
-    global token
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token,
-        'private_key': 'invalidPrivateKey'
-    })
-    assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid private_key'
-
-
-def test_check_pairing_success(baseurl):
-    global token
-    global private_key
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token,
-        'private_key': private_key
-    })
-    assert res.status_code == 200
-    assert res.json()['done'] == 'success'
-
-
-def test_check_pairing_invalid_pairing(baseurl):
-    global token
-    global private_key
-    url = baseurl+'/pairing/check_pairing'
-    res = requests.post(url, json={
-        'token': token,
-        'private_key': private_key
-    })
-    assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid pairing'
-
-
 def test_auth_check_success(baseurl):
     global token
     url = baseurl+'/pairing/auth_check'
@@ -205,6 +152,7 @@ def test_auth_check_invalid_token(baseurl):
 
 def test_done(baseurl):
     global token
+    global email
     client = MongoClient('localhost', 27017)
     db = client['db']
 
@@ -214,10 +162,6 @@ def test_done(baseurl):
 
     users = db['users']
     user = users.find_one({'token': token})
-    pre_pairings = db['pre_pairings']
-    pre_pairings.delete_many({'uid': user['uid']})
-    assert not pre_pairings.find_one({'uid': user['uid']})
-
     pairings = db['pairings']
     pairings.delete_many({'uid': user['uid']})
     assert not pairings.find_one({'uid': user['uid']})
@@ -230,5 +174,6 @@ def test_done(baseurl):
     })
     users.delete_many({'token': token})
     assert not users.find_one({'token': token})
+    assert not users.find_one({'email': email})
 
     client.close()
