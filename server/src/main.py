@@ -12,7 +12,6 @@ from StreetPass.routes import STREETPASS_BP
 from Notification.routes import NOTIFICATION_BP
 
 import logging
-import logging.handlers
 from handlers import DiscordHandler
 
 
