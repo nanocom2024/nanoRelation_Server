@@ -42,10 +42,11 @@ app.register_blueprint(NOTIFICATION_BP)
 webhook_url=settings.log_webhook_url
 
 # Discord Handler の作成
-discord_handler = DiscordHandler(webhook_url)
-discord_handler.setLevel(logging.INFO)
-werkzeug_logger = logging.getLogger('werkzeug')
-werkzeug_logger.addHandler(discord_handler)
+if(webhook_url):
+    discord_handler = DiscordHandler(webhook_url)
+    discord_handler.setLevel(logging.INFO)
+    werkzeug_logger = logging.getLogger('werkzeug')
+    werkzeug_logger.addHandler(discord_handler)
 
 
 if __name__ == '__main__':
