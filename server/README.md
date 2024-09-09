@@ -14,13 +14,14 @@ FirebaseのAuthenticationを用いています
 PATH_TO_FIREBASE_JSON = "example"
 JWT_SECRET_KEY = "example"
 FIREBASE_API_KEY = "example"
+LOG_WEBHOOK_URL = "https://discord.com/api/webhooks/EXAMPLE"
 ```
 
-・Firebase Authenticationに従ってsdkのjsonを配置して，パスを設定してください
-
-・serverの秘密鍵の設定もしてください
-
-・firebaseのAPIキーも設定してください
+- Firebase Authenticationに従ってsdkのjsonを配置して，パスを設定してください
+- serverの秘密鍵の設定もしてください
+- firebaseのAPIキーも設定してください
+- ログをdiscordに送信する場合はwebhookのURLを設定してください
+    - 指定なしの場合，Webhook機能は自動的に無効になります
 
 ### ライブラリのインストール
 
