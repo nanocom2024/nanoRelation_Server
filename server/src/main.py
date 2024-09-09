@@ -11,6 +11,10 @@ from Pairing.routes import PAIRING_BP
 from StreetPass.routes import STREETPASS_BP
 from Notification.routes import NOTIFICATION_BP
 
+import logging
+import logging.handlers
+from handlers import DiscordHandler
+
 
 # Settings インスタンス
 settings = Settings(join(dirname(__file__), '../.env'))
@@ -34,6 +38,14 @@ app.register_blueprint(AUTH_BP)
 app.register_blueprint(PAIRING_BP)
 app.register_blueprint(STREETPASS_BP)
 app.register_blueprint(NOTIFICATION_BP)
+
+webhook_url=settings.log_webhook_url
+
+# Discord Handler の作成
+discord_handler = DiscordHandler(webhook_url)
+discord_handler.setLevel(logging.INFO)
+werkzeug_logger = logging.getLogger('werkzeug')
+werkzeug_logger.addHandler(discord_handler)
 
 
 if __name__ == '__main__':
