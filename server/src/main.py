@@ -47,6 +47,11 @@ if(webhook_url):
     discord_handler.setLevel(logging.INFO)
     werkzeug_logger = logging.getLogger('werkzeug')
     werkzeug_logger.addHandler(discord_handler)
+    
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    werkzeug_logger.addHandler(console_handler)
+    
 
 
 if __name__ == '__main__':
