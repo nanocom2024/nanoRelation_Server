@@ -11,7 +11,7 @@ class Settings:
         self.__path_to_firebase_json = os.environ.get("PATH_TO_FIREBASE_JSON")
         self.__jwt_secret_key = os.environ.get("JWT_SECRET_KEY")
         self.__firebase_api_key = os.environ.get("FIREBASE_API_KEY")
-        self.__log_webhook_url = os.environ.get("LOG_WEBHHOK_URL")
+        self.__log_webhook_url = os.environ.get("LOG_WEBHOOK_URL")
 
     # firebase の json
     @property
