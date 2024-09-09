@@ -21,7 +21,7 @@ LOG_WEBHOOK_URL = "https://discord.com/api/webhooks/EXAMPLE"
 - serverの秘密鍵の設定もしてください
 - firebaseのAPIキーも設定してください
 - ログをdiscordに送信する場合はwebhookのURLを設定してください
-    - 指定なしの場合、Webhook機能は自動的に無効になります
+    - 指定なしの場合，Webhook機能は自動的に無効になります
 
 ### ライブラリのインストール
 
