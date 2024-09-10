@@ -5,27 +5,35 @@ from pymongo import MongoClient
 
 private_key = ''
 public_key = ''
+major = ''
+minor = ''
 token = ''
 email = ''.join(random.choices(string.ascii_lowercase +
                 string.digits, k=20))+'@test.org'
 
 
-def test_generate_device_key_success(baseurl):
+def test_generate_major_minor_success(baseurl):
     global private_key
     global public_key
-    url = baseurl+'/pairing/generate_device_key'
+    global major
+    global minor
+    url = baseurl+'/pairing/generate_major_minor'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
     assert res.status_code == 200
     private_key = res.json()['private_key']
-    public_key = res.json()['public_key']
     assert private_key
+    public_key = res.json()['public_key']
     assert public_key
+    major = res.json()['major']
+    assert major
+    minor = res.json()['minor']
+    assert minor
 
 
-def test_generate_device_key_missing_uid(baseurl):
-    url = baseurl+'/pairing/generate_device_key'
+def test_generate_major_minor_missing_uid(baseurl):
+    url = baseurl+'/pairing/generate_major_minor'
     res = requests.post(url, json={
         'uid': '',
     })
@@ -33,8 +41,8 @@ def test_generate_device_key_missing_uid(baseurl):
     assert res.json()['error'] == 'Missing uid'
 
 
-def test_generate_device_key_already_exists(baseurl):
-    url = baseurl+'/pairing/generate_device_key'
+def test_generate_major_minor_already_exists(baseurl):
+    url = baseurl+'/pairing/generate_major_minor'
     res = requests.post(url, json={
         'uid': 'test_uid',
     })
@@ -56,12 +64,13 @@ def get_token(baseurl):
 
 def test_register_pairing_success(baseurl):
     global token
-    global public_key
+    global major, minor
     url = baseurl+'/pairing/register_pairing'
     token = get_token(baseurl)
     res = requests.post(url, json={
         'token': token,
-        'public_key': public_key
+        'major': major,
+        'minor': minor
     })
     assert res.status_code == 200
     assert res.json()['done'] == 'pairing'
@@ -73,52 +82,81 @@ def test_register_pairing_success(baseurl):
 
     user = users.find_one({'token': token})
     pairing = pairings.find_one(
-        {'uid': user['uid'], 'public_key': public_key, 'private_key': private_key})
+        {'uid': user['uid'], 'major': major, 'minor': minor})
     assert pairing
 
 
 def test_register_pairing_missing_token(baseurl):
     global public_key
+    global major, minor
     url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': '',
-        'public_key': public_key
+        'major': major,
+        'minor': minor
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Missing token'
 
 
-def test_register_pairing_missing_public_key(baseurl):
+def test_register_pairing_missing_major(baseurl):
     global token
+    global minor
     url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
-        'public_key': ''
+        'major': '',
+        'minor': minor
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Missing public_key'
+    assert res.json()['error'] == 'Missing major'
+
+
+def test_register_pairing_missing_minor(baseurl):
+    global token
+    global major
+    url = baseurl+'/pairing/register_pairing'
+    res = requests.post(url, json={
+        'token': token,
+        'major': major,
+        'minor': ''
+    })
+    assert res.status_code == 400
+    assert res.json()['error'] == 'Missing minor'
 
 
 def test_register_pairing_invalid_token(baseurl):
     global public_key
+    global major, minor
     url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': 'invalidToken',
-        'public_key': public_key
+        'major': major,
+        'minor': minor
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Invalid token'
 
 
-def test_register_pairing_invalid_public_key(baseurl):
+def test_register_pairing_invalid_major_minor(baseurl):
     global token
+    global major, minor
     url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token,
-        'public_key': 'invalidPublicKey'
+        'major': 'invalidMajor',
+        'minor': minor
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid public_key'
+    assert res.json()['error'] == 'Invalid major,minor'
+
+    res = requests.post(url, json={
+        'token': token,
+        'major': major,
+        'minor': 'invalidMinor'
+    })
+    assert res.status_code == 400
+    assert res.json()['error'] == 'Invalid major,minor'
 
 
 def test_auth_check_success(baseurl):
