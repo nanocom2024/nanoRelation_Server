@@ -1,3 +1,4 @@
+import pytest
 import random
 import string
 import requests
@@ -6,6 +7,8 @@ import datetime
 
 private_key1 = ''
 public_key1 = ''
+major1 = ''
+minor1 = ''
 token1 = ''
 email1 = ''.join(random.choices(string.ascii_lowercase +
                                 string.digits, k=20))+'@test.org'
@@ -13,6 +16,8 @@ device_uid1 = 'test_uid1'
 
 private_key2 = ''
 public_key2 = ''
+major2 = ''
+minor2 = ''
 token2 = ''
 email2 = ''.join(random.choices(string.ascii_lowercase +
                                 string.digits, k=20))+'@test.org'
@@ -44,52 +49,56 @@ def test_signup_success(baseurl):
     assert token2
 
 
-def test_device_key_success(baseurl):
-    global private_key1
-    global public_key1
+def test_device_major_minor(baseurl):
     global device_uid1
-    url = baseurl+'/pairing/generate_device_key'
+    global private_key1
+    global major1, minor1
+    url = baseurl+'/pairing/generate_major_minor'
     res = requests.post(url, json={
         'uid': device_uid1,
     })
     assert res.status_code == 200
     private_key1 = res.json()['private_key']
-    public_key1 = res.json()['public_key']
     assert private_key1
-    assert public_key1
+    major1 = res.json()['major']
+    assert major1
+    minor1 = res.json()['minor']
+    assert minor1
 
-    global private_key2
-    global public_key2
     global device_uid2
-    url = baseurl+'/pairing/generate_device_key'
+    global private_key2
+    global major2, minor2
+    url = baseurl+'/pairing/generate_major_minor'
     res = requests.post(url, json={
         'uid': device_uid2,
     })
     assert res.status_code == 200
     private_key2 = res.json()['private_key']
-    public_key2 = res.json()['public_key']
     assert private_key2
-    assert public_key2
+    major2 = res.json()['major']
+    assert major2
+    minor2 = res.json()['minor']
+    assert minor2
 
 
 def test_pairing_success(baseurl):
     global token1
     global private_key1
-    global public_key1
     url = baseurl+'/pairing/register_pairing'
     res = requests.post(url, json={
         'token': token1,
-        'public_key': public_key1
+        'major': major1,
+        'minor': minor1
     })
     assert res.status_code == 200
     assert res.json()['done'] == 'pairing'
 
     global token2
     global private_key2
-    global public_key2
     res = requests.post(url, json={
         'token': token2,
-        'public_key': public_key2
+        'major': major2,
+        'minor': minor2
     })
     assert res.status_code == 200
     assert res.json()['done'] == 'pairing'
@@ -110,44 +119,66 @@ def test_pairing_success(baseurl):
     assert token2
 
 
-def test_received_beacon_missing_received_public_key(baseurl):
+def test_received_beacon_missing_received_major(baseurl):
     global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': '',
+        'received_major': '',
+        'received_minor': minor1,
         'private_key': private_key1
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Missing received_public_key'
+    assert res.json()['error'] == 'Missing received_major'
+
+
+def test_received_beacon_missing_received_minor(baseurl):
+    global private_key1
+    url = baseurl+'/streetpass/received_beacon'
+    res = requests.post(url, json={
+        'received_major': major1,
+        'received_minor': '',
+        'private_key': private_key1
+    })
+    assert res.status_code == 400
+    assert res.json()['error'] == 'Missing received_minor'
 
 
 def test_received_beacon_missing_private_key(baseurl):
-    global public_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': public_key1,
+        'received_major': major1,
+        'received_minor': minor1,
         'private_key': ''
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Missing private_key'
 
 
-def test_received_beacon_invalid_received_public_key(baseurl):
+def test_received_beacon_invalid_received_major_minor(baseurl):
     global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': 'invalidPublicKey',
+        'received_major': major1,
+        'received_minor': 'invalidMinor',
         'private_key': private_key1
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid received_public_key'
+    assert res.json()['error'] == 'Invalid received_major_minor'
+
+    res = requests.post(url, json={
+        'received_major': 'invalidMajor',
+        'received_minor': minor1,
+        'private_key': private_key1
+    })
+    assert res.status_code == 400
+    assert res.json()['error'] == 'Invalid received_major_minor'
 
 
 def test_received_beacon_invalid_private_key(baseurl):
-    global public_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': public_key1,
+        'received_major': major1,
+        'received_minor': minor1,
         'private_key': 'invalidPrivateKey'
     })
     assert res.status_code == 400
@@ -156,19 +187,19 @@ def test_received_beacon_invalid_private_key(baseurl):
 
 def test_received_beacon_enable_success(baseurl):
     global private_key1
-    global public_key2
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': public_key2,
+        'received_major': major2,
+        'received_minor': minor2,
         'private_key': private_key1
     })
     assert res.status_code == 200
     assert res.json()['pass'] == 'false'
 
     global private_key2
-    global public_key1
     res = requests.post(url, json={
-        'received_public_key': public_key1,
+        'received_major': major1,
+        'received_minor': minor1,
         'private_key': private_key2
     })
     assert res.status_code == 200
@@ -176,8 +207,8 @@ def test_received_beacon_enable_success(baseurl):
 
 
 def test_received_beacon_disable_success(baseurl):
-    global token1, private_key1, public_key2
-    global token2, private_key2, public_key1
+    global token1, private_key1
+    global token2, private_key2
     client = MongoClient('localhost', 27017)
     db = client['db']
     users = db['users']
@@ -194,7 +225,8 @@ def test_received_beacon_disable_success(baseurl):
 
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
-        'received_public_key': public_key2,
+        'received_major': major2,
+        'received_minor': minor2,
         'private_key': private_key1
     })
     assert res.status_code == 200

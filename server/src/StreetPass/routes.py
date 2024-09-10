@@ -15,16 +15,20 @@ log_passes = db.log_passes
 
 @STREETPASS_BP.route('/received_beacon', methods=['POST'])
 def received_beacon():
-    received_public_key = request.json['received_public_key']
-    if not received_public_key:
-        return jsonify({'error': 'Missing received_public_key'}), 400
+    received_major = request.json['received_major']
+    if not received_major:
+        return jsonify({'error': 'Missing received_major'}), 400
+    received_minor = request.json['received_minor']
+    if not received_minor:
+        return jsonify({'error': 'Missing received_minor'}), 400
     private_key = request.json['private_key']
     if not private_key:
         return jsonify({'error': 'Missing private_key'}), 400
 
-    received_user = pairings.find_one({'public_key': received_public_key})
+    received_user = pairings.find_one(
+        {'major': received_major, 'minor': received_minor})
     if not received_user:
-        return jsonify({'error': 'Invalid received_public_key'}), 400
+        return jsonify({'error': 'Invalid received_major_minor'}), 400
     sent_user = pairings.find_one({'private_key': private_key})
     if not sent_user:
         return jsonify({'error': 'Invalid private_key'}), 400
