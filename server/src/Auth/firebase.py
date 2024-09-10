@@ -5,6 +5,7 @@ import requests
 def sign_in_with_email_and_password(api_key, email, password):
     """
     Firebaseで認証を行う(SDKの signInWithEmailAndPassword と同値)
+
     :param api_key:
     :param email:
     :param password:
