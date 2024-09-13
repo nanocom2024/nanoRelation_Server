@@ -10,7 +10,7 @@ def generate_major_minor(public_key):
     majorとminorをpublic_keyから生成する
 
     :param public_key: str
-    :return major, minor: (int, int)
+    :return major, minor: (str, str)
     """
 
     temp = public_key
@@ -21,7 +21,7 @@ def generate_major_minor(public_key):
             break
         temp = hashlib.sha256(temp.encode()).hexdigest()
 
-    return major, minor
+    return str(major), str(minor)
 
 
 def generate(key):
