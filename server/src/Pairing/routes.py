@@ -86,7 +86,7 @@ def auth_check():
 
     user = users.find_one({'token': token})
     if not user:
-        return jsonify({'error': 'Invalid token'}), 400
+        return jsonify({'error': 'Invalid token'}), 401
 
     new_token = create_access_token(identity=user['token'])
     users.update_one({'token': token}, {'$set': {'token': new_token}})
