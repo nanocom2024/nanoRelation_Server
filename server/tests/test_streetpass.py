@@ -233,6 +233,18 @@ def test_received_beacon_disable_success(baseurl):
     assert res.json()['pass'] == 'false'
 
 
+def test_received_beacon_own_success(baseurl):
+    global private_key1
+    url = baseurl+'/streetpass/received_beacon'
+    res = requests.post(url, json={
+        'received_major': major1,
+        'received_minor': minor1,
+        'private_key': private_key1
+    })
+    assert res.status_code == 200
+    assert res.json()['pass'] == 'own'
+
+
 def test_done():
     global token1, device_uid1, email1
     global token2, device_uid2, email2

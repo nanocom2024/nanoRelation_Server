@@ -33,6 +33,9 @@ def received_beacon():
     if not sent_user:
         return jsonify({'error': 'Invalid private_key'}), 400
 
+    if received_user['uid'] == sent_user['uid']:
+        return jsonify({'pass': 'own'}), 200
+
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
     pre_passes.delete_many({'created_at': {'$lt': threshold}})
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=60)
