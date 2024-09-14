@@ -184,7 +184,7 @@ def test_auth_check_invalid_token(baseurl):
     res = requests.post(url, json={
         'token': 'invalidToken'
     })
-    assert res.status_code == 400
+    assert res.status_code == 401
     assert res.json()['error'] == 'Invalid token'
 
 
