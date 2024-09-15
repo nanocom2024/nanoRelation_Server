@@ -10,9 +10,9 @@ from Auth.routes import AUTH_BP
 from Pairing.routes import PAIRING_BP
 from StreetPass.routes import STREETPASS_BP
 from Notification.routes import NOTIFICATION_BP
+import init_server
 
 import logging
-import logging.handlers
 from handlers import DiscordHandler
 
 
@@ -32,6 +32,8 @@ app.config['JWT_ALGORITHM'] = 'HS256'                       # 暗号化署名の
 # jwt manager
 jwt = JWTManager(app)
 
+# init server
+init_server.db_init()
 
 # Blueprint
 app.register_blueprint(AUTH_BP)
@@ -39,19 +41,18 @@ app.register_blueprint(PAIRING_BP)
 app.register_blueprint(STREETPASS_BP)
 app.register_blueprint(NOTIFICATION_BP)
 
-webhook_url=settings.log_webhook_url
+webhook_url = settings.log_webhook_url
 
 # Discord Handler の作成
-if(webhook_url):
+if (webhook_url):
     discord_handler = DiscordHandler(webhook_url)
     discord_handler.setLevel(logging.INFO)
     werkzeug_logger = logging.getLogger('werkzeug')
     werkzeug_logger.addHandler(discord_handler)
-    
+
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
     werkzeug_logger.addHandler(console_handler)
-    
 
 
 if __name__ == '__main__':

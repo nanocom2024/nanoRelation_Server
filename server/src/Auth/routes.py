@@ -28,14 +28,14 @@ def signup():
     if not password:
         return jsonify({'error': 'Missing password'}), 400
 
+    if users.find_one({'email': email}):
+        return jsonify({'error': 'The user with the provided email already exists (EMAIL_EXISTS).'}), 400
+
     try:
         user = auth.create_user(email=email, password=password)
         access_token = create_access_token(identity=user.uid)
     except Exception as e:
         return jsonify({'error': str(e)}), 400
-
-    if users.find_one({'email': email}):
-        users.delete_many({'email': email})
 
     user = {
         'uid': user.uid,
@@ -74,7 +74,11 @@ def signin():
     if 'error' in res:
         return jsonify({'error': res['error']['message']}), 400
 
-    users.update_one({'email': email}, {'$set': {'token': res['idToken']}})
+    if not users.find({'email': email}):
+        # firebaseにuserが存在するが、DBには存在しない場合
+        return jsonify({'error': 'User not found'}), 400
+    else:
+        users.update_one({'email': email}, {'$set': {'token': res['idToken']}})
 
     return jsonify({'token': res['idToken']}), 200
 
