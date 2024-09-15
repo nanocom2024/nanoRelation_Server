@@ -120,47 +120,44 @@ def test_pairing_success(baseurl):
 
 
 def test_received_beacon_missing_received_major(baseurl):
-    global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': '',
         'received_minor': minor1,
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Missing received_major'
 
 
 def test_received_beacon_missing_received_minor(baseurl):
-    global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': major1,
         'received_minor': '',
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Missing received_minor'
 
 
-def test_received_beacon_missing_private_key(baseurl):
+def test_received_beacon_missing_token(baseurl):
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': major1,
         'received_minor': minor1,
-        'private_key': ''
+        'token': ''
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Missing private_key'
+    assert res.json()['error'] == 'Missing token'
 
 
 def test_received_beacon_invalid_received_major_minor(baseurl):
-    global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': major1,
         'received_minor': 'invalidMinor',
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Invalid received_major_minor'
@@ -168,47 +165,45 @@ def test_received_beacon_invalid_received_major_minor(baseurl):
     res = requests.post(url, json={
         'received_major': 'invalidMajor',
         'received_minor': minor1,
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 400
     assert res.json()['error'] == 'Invalid received_major_minor'
 
 
-def test_received_beacon_invalid_private_key(baseurl):
+def test_received_beacon_invalid_token(baseurl):
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': major1,
         'received_minor': minor1,
-        'private_key': 'invalidPrivateKey'
+        'token': 'invalidToken'
     })
     assert res.status_code == 400
-    assert res.json()['error'] == 'Invalid private_key'
+    assert res.json()['error'] == 'Invalid token'
 
 
 def test_received_beacon_enable_success(baseurl):
-    global private_key1
     url = baseurl+'/streetpass/received_beacon'
     res = requests.post(url, json={
         'received_major': major2,
         'received_minor': minor2,
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 200
     assert res.json()['pass'] == 'false'
 
-    global private_key2
     res = requests.post(url, json={
         'received_major': major1,
         'received_minor': minor1,
-        'private_key': private_key2
+        'token': token2
     })
     assert res.status_code == 200
     assert res.json()['pass'] == 'true'
 
 
 def test_received_beacon_disable_success(baseurl):
-    global token1, private_key1
-    global token2, private_key2
+    global token1
+    global token2
     client = MongoClient('localhost', 27017)
     db = client['db']
     users = db['users']
@@ -227,10 +222,21 @@ def test_received_beacon_disable_success(baseurl):
     res = requests.post(url, json={
         'received_major': major2,
         'received_minor': minor2,
-        'private_key': private_key1
+        'token': token1
     })
     assert res.status_code == 200
     assert res.json()['pass'] == 'false'
+
+
+def test_received_beacon_own_success(baseurl):
+    url = baseurl+'/streetpass/received_beacon'
+    res = requests.post(url, json={
+        'received_major': major1,
+        'received_minor': minor1,
+        'token': token1
+    })
+    assert res.status_code == 200
+    assert res.json()['pass'] == 'own'
 
 
 def test_done():

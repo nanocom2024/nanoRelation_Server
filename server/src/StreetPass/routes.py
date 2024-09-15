@@ -7,6 +7,7 @@ STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
 # MongoDBに接続
 db = DB()
+users = db.users
 pairings = db.pairings
 pre_passes = db.pre_passes
 now_passes = db.now_passes
@@ -21,17 +22,20 @@ def received_beacon():
     received_minor = request.json['received_minor']
     if not received_minor:
         return jsonify({'error': 'Missing received_minor'}), 400
-    private_key = request.json['private_key']
-    if not private_key:
-        return jsonify({'error': 'Missing private_key'}), 400
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
 
     received_user = pairings.find_one(
         {'major': received_major, 'minor': received_minor})
     if not received_user:
         return jsonify({'error': 'Invalid received_major_minor'}), 400
-    sent_user = pairings.find_one({'private_key': private_key})
+    sent_user = users.find_one({'token': token})
     if not sent_user:
-        return jsonify({'error': 'Invalid private_key'}), 400
+        return jsonify({'error': 'Invalid token'}), 400
+
+    if received_user['uid'] == sent_user['uid']:
+        return jsonify({'pass': 'own'}), 200
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
     pre_passes.delete_many({'created_at': {'$lt': threshold}})
