@@ -8,8 +8,8 @@ def add_lost(major: str, minor: str) -> None:
     """
     迷子デバイスのmajorとminorをDBに追加する
 
-    :param major: str
-    :param minor: str
+    :param str major:
+    :param str minor:
     """
     lost_children.insert_one({'major': major, 'minor': minor})
 
@@ -18,7 +18,7 @@ def delete_lost(major: str, minor: str) -> None:
     """
     迷子デバイスのmajorとminorをDBから削除する
 
-    :param major: str
-    :param minor: str
+    :param str major:
+    :param str minor:
     """
     lost_children.delete_one({'major': major, 'minor': minor})

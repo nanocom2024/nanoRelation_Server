@@ -5,11 +5,11 @@ db = DB()
 device_keys = db.device_keys
 
 
-def generate_major_minor(public_key):
+def generate_major_minor(public_key: str) -> tuple[str, str]:
     """
     majorとminorをpublic_keyから生成する
 
-    :param public_key: str
+    :param str public_key:
     :return major, minor: (str, str)
     """
 
@@ -24,7 +24,7 @@ def generate_major_minor(public_key):
     return str(major), str(minor)
 
 
-def generate(key):
+def generate(key: str) -> tuple[int, int]:
     forward = key[:32]
     backward = key[32:]
 
