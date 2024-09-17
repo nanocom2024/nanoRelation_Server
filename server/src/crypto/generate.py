@@ -2,7 +2,7 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from cryptography.hazmat.primitives import serialization
 
 
-def generate_ed25519_keypair():
+def generate_ed25519_keypair() -> tuple[str, str]:
     '''
     Generate a new Ed25519 keypair.
 
