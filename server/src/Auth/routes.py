@@ -131,3 +131,18 @@ def delete_account():
     users.delete_many({'uid': user['uid']})
 
     return jsonify({'done': 'success'}), 200
+
+
+@AUTH_BP.route('/fetch_name', methods=['POST'])
+def fetch_name():
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    user = users.find_one({'token': token})
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    name = user['name']
+
+    return jsonify({'name': name}), 200
