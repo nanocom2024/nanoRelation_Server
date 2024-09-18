@@ -37,6 +37,9 @@ def register_child():
     if not parent:
         return jsonify({'error': 'Invalid token'}), 400
 
+    if parent['email'] == email:
+        return jsonify({'error': 'can not register own'}), 400
+
     # ユーザーの認証(child)
     try:
         auth.get_user_by_email(email)
