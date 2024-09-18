@@ -6,6 +6,7 @@ import requests
 client = MongoClient('localhost', 27017)
 db = client['db']
 users = db['users']
+children = db['children']
 lost_children = db['lost_children']
 device_keys = db['device_keys']
 
@@ -122,9 +123,12 @@ def test_delete_lost_info_success(baseurl):
 def test_done():
     lost_children.delete_many({'major': child_major, 'minor': child_minor})
     device_keys.delete_many({'major': child_major, 'minor': child_minor})
+    parent = users.find_one({'email': parent_email})
+    children.delete_many({'parent_uid': parent['uid']})
     assert not device_keys.find_one({'uid': 'test_child_device_uid'})
     assert not lost_children.find_one(
         {'major': child_major, 'minor': child_minor})
+    assert not children.find_one({'parent_uid': parent['uid']})
 
 
 def test_cleanup_users(baseurl):
