@@ -37,6 +37,9 @@ def register_child():
     if not parent:
         return jsonify({'error': 'Invalid token'}), 400
 
+    if parent['email'] == email:
+        return jsonify({'error': 'can not register own'}), 400
+
     # ユーザーの認証(child)
     try:
         auth.get_user_by_email(email)
@@ -61,3 +64,28 @@ def register_child():
     add_child(parent_uid=parent['uid'], child_uid=child['uid'])
 
     return jsonify({'done': 'register'}), 200
+
+
+@CHILD_BP.route('/fetch_children', methods=['POST'])
+def fetch_children():
+    # parentのtoken
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    # tokenの認証(parent)
+    parent = users.find_one({'token': token})
+    if not parent:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    children = db.children.find_one({'parent_uid': parent['uid']})
+    if not children:
+        return jsonify({'children': []}), 200
+
+    children = children['children']
+    children_list = [users.find_one({'uid': child_uid})
+                     for child_uid in children]
+    children_list = [child for child in children_list if child]
+    res = [{'uid': child['uid'], 'name': child['name']} for child in children_list]
+
+    return jsonify({'children': res}), 200
