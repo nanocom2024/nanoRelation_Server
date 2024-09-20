@@ -21,4 +21,4 @@ def delete_lost(major: str, minor: str) -> None:
     :param str major:
     :param str minor:
     """
-    lost_children.delete_one({'major': major, 'minor': minor})
+    lost_children.delete_many({'major': major, 'minor': minor})
