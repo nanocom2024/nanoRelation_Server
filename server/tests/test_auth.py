@@ -70,6 +70,16 @@ def test_signup_already_exist(baseurl):
     assert res.json()['error'] == expected
 
 
+def test_fetch_name_success(baseurl):
+    global token
+    url = baseurl+'/auth/fetch_name'
+    res = requests.post(url, json={
+        'token': token
+    })
+    assert res.status_code == 200
+    assert res.json()['name'] == 'test'
+
+
 def test_signout_missing_token(baseurl):
     url = baseurl+'/auth/signout'
     res = requests.post(url, json={
