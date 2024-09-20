@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from DB import DB
-from LostChild.LostChildrenModel import add_lost, delete_lost
+from LostChild.LostChildrenModel import add_lost, delete_lost, is_lost_child
 from LostChild.ChildrenModel import is_registered_child
 
 LOSTCHILD_BP = Blueprint('lost_child', __name__, url_prefix='/lost_child')
@@ -71,3 +71,26 @@ def delete_lost_info():
     delete_lost(pairing['major'], pairing['minor'])
 
     return jsonify({'done': 'Lost child deleted'}), 200
+
+
+@LOSTCHILD_BP.route('/isLost', methods=['POST'])
+def isLost():
+    # childのuid
+    uid = request.json['uid']
+    if not uid:
+        return jsonify({'error': 'Missing uid'}), 400
+
+    # childの認証
+    child = users.find_one({'uid': uid})
+    if not child:
+        return jsonify({'error': 'Invalid uid'}), 400
+
+    pairing = pairings.find_one({'uid': child['uid']})
+
+    if not pairing:
+        return jsonify({'error': '子供のデバイスのペアリングを行なってください'}), 400
+
+    if is_lost_child(pairing['major'], pairing['minor']):
+        return jsonify({'is_lost': 'true'}), 200
+
+    return jsonify({'is_lost': 'false'}), 200
