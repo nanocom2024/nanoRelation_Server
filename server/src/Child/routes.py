@@ -86,6 +86,7 @@ def fetch_children():
     children_list = [users.find_one({'uid': child_uid})
                      for child_uid in children]
     children_list = [child for child in children_list if child]
-    res = [{'uid': child['uid'], 'name': child['name']} for child in children_list]
+    res = [{'uid': child['uid'], 'name': child['name'],
+            'name_id': child['name_id']} for child in children_list]
 
     return jsonify({'children': res}), 200

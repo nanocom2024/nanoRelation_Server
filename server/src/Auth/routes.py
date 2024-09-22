@@ -136,5 +136,6 @@ def fetch_name():
         return jsonify({'error': 'Invalid token'}), 400
 
     name = user['name']
+    name_id = user['name_id']
 
-    return jsonify({'name': name}), 200
+    return jsonify({'name': name, 'name_id': name_id}), 200
