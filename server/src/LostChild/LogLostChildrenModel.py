@@ -16,3 +16,13 @@ def add_log_lost(child_uid: str, msgID: str, text: str, tag: str, timestamp: dat
     """
     log_lost_children.update_one({'child_uid': child_uid}, {
         '$push': {'messages': {'msgID': msgID, 'text': text, 'tag': tag, 'timestamp': timestamp}}}, upsert=True)
+
+
+def get_log_lost(child_uid: str) -> dict:
+    """
+    迷子デバイスのmajorとminorをDBに追加する
+
+    :param str child_uid:
+    :return: dict
+    """
+    return log_lost_children.find_one({'child_uid': child_uid})
