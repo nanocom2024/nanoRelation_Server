@@ -1,7 +1,9 @@
+from datetime import datetime
 from flask import Blueprint, request, jsonify
 from DB import DB
 from LostChild.LostChildrenModel import add_lost, delete_lost, is_lost_child
 from LostChild.ChildrenModel import is_registered_child
+from LostChild.LogLostChildrenModel import add_log_lost
 
 LOSTCHILD_BP = Blueprint('lost_child', __name__, url_prefix='/lost_child')
 
@@ -94,3 +96,48 @@ def isLost():
         return jsonify({'is_lost': 'true'}), 200
 
     return jsonify({'is_lost': 'false'}), 200
+
+
+@LOSTCHILD_BP.route('/add_message', methods=['POST'])
+def add_message():
+    # parentのtoken
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+    # childのuid
+    uid = request.json['uid']
+    if not uid:
+        return jsonify({'error': 'Missing uid'}), 400
+    # msg
+    msgID = request.json['msgID']
+    if not msgID:
+        return jsonify({'error': 'Missing msgID'}), 400
+    text = request.json['text']
+    if not text:
+        return jsonify({'error': 'Missing text'}), 400
+    tag = request.json['tag']
+    if not tag:
+        return jsonify({'error': 'Missing tag'}), 400
+    timestamp = request.json['timestamp']
+    if not timestamp:
+        return jsonify({'error': 'Missing timestamp'}), 400
+    date_object = datetime.fromtimestamp(timestamp)
+
+    # tokenの認証(parent)
+    parent = users.find_one({'token': token})
+    if not parent:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    # childの認証
+    child = users.find_one({'uid': uid})
+    if not child:
+        return jsonify({'error': 'Invalid uid'}), 400
+
+    pairing = pairings.find_one({'uid': child['uid']})
+    if not pairing:
+        return jsonify({'error': '子供のデバイスのペアリングを行なってください'}), 400
+
+    add_log_lost(child_uid=uid, msgID=msgID, tag=tag,
+                 text=text, timestamp=date_object)
+
+    return jsonify({'done': 'Message added'}), 200
