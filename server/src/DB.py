@@ -15,6 +15,7 @@ class DB:
         self.__notification_config = db["notification_config"]
         self.__children = db["children"]
         self.__lost_children = db["lost_children"]
+        self.__log_lost_children = db["log_lost_children"]
 
     # users
     @property
@@ -60,3 +61,8 @@ class DB:
     @property
     def lost_children(self):
         return self.__lost_children
+
+    # log_lost_children
+    @property
+    def log_lost_children(self):
+        return self.__log_lost_children

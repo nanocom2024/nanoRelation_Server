@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from DB import DB
 import datetime
 from StreetPass.NotificationModel import check_notification_allowed
-from StreetPass.LostChildrenModel import is_lost_child
+from LostChild.LostChildrenModel import is_lost_child
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
