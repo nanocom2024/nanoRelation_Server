@@ -3,6 +3,7 @@ from DB import DB
 import datetime
 from StreetPass.NotificationModel import check_notification_allowed
 from LostChild.LostChildrenModel import is_lost_child
+from Child.ChildrenModel import is_registered_child
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -40,6 +41,9 @@ def received_beacon():
 
     if is_lost_child(major=received_major, minor=received_minor):
         return jsonify({'pass': 'lost'}), 200
+
+    if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
+        return jsonify({'pass': 'child'}), 200
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
     pre_passes.delete_many({'created_at': {'$lt': threshold}})
