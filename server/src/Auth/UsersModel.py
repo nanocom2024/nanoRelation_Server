@@ -37,6 +37,7 @@ def genarate_username_id(name: str) -> str:
     :return: 四桁のID (例: ab3d)
     """
     id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=4))
+    id = '#' + id
     if db.users.find_one({'name': name, 'name_id': id}):
         return genarate_username_id(name)
 
