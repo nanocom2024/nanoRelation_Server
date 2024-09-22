@@ -4,7 +4,7 @@ from os.path import join, dirname
 from DB import DB
 from firebase_admin import auth
 from flask_jwt_extended import create_access_token
-from Auth import firebase
+from Auth import firebase, UsersModel
 
 AUTH_BP = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -37,16 +37,8 @@ def signup():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-    user = {
-        'uid': user.uid,
-        'name': name,
-        'email': email,
-        'token': access_token
-    }
-    res = users.insert_one(user)
-
-    if not res:
-        return jsonify({'error': 'Failed to insert user'}), 400
+    UsersModel.create_account(uid=user.uid, name=name,
+                              email=email, token=access_token)
 
     return jsonify({'token': access_token}), 200
 
