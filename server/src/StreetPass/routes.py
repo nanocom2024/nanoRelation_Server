@@ -6,6 +6,7 @@ from LostChild.LostChildrenModel import is_lost_child
 from Child.ChildrenModel import is_registered_child
 from User.LogOwnModel import add_log_own
 from User.LogLostPassesModel import add_log_lost_passes
+from User.LogNearOwnChildrenModel import add_log_near_own_children
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -48,7 +49,8 @@ def received_beacon():
         return jsonify({'pass': 'lost'}), 200
 
     if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
-        # do something
+        add_log_near_own_children(
+            parent_uid=sent_user['uid'], child_uid=received_user['uid'])
         return jsonify({'pass': 'child'}), 200
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
