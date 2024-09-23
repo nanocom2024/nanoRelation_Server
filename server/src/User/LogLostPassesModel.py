@@ -13,6 +13,7 @@ def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
     30秒間に一回保存する
 
     :param str owner_uid:
+    :param str child_uid:
     """
     current_time = datetime.now()
 
