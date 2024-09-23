@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 from DB import DB
 from LostChild.LostChildrenModel import add_lost, delete_lost, is_lost_child
-from LostChild.ChildrenModel import is_registered_child
+from Child.ChildrenModel import is_registered_child
 from LostChild.LogLostChildrenModel import add_log_lost, get_log_lost
 
 LOSTCHILD_BP = Blueprint('lost_child', __name__, url_prefix='/lost_child')
