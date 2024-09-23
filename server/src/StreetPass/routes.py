@@ -47,8 +47,8 @@ def received_beacon():
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
     pre_passes.delete_many({'created_at': {'$lt': threshold}})
-    threshold = datetime.datetime.now() - datetime.timedelta(seconds=60)
-    now_passes.delete_many({'created_at': {'$lt': threshold}})
+    threshold = datetime.datetime.now().timestamp() - 60
+    now_passes.delete_many({'timestamp': {'$lt': threshold}})
 
     uid1 = min(received_user['uid'], sent_user['uid'])
     uid2 = max(received_user['uid'], sent_user['uid'])
@@ -59,7 +59,7 @@ def received_beacon():
         data = {
             'uid1': uid1,
             'uid2': uid2,
-            'created_at': datetime.datetime.now()
+            'timestamp': datetime.datetime.now().timestamp()
         }
         now_passes.insert_one(data)
         log_passes.insert_one(data)
