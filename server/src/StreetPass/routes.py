@@ -5,6 +5,7 @@ from StreetPass.NotificationModel import check_notification_allowed
 from LostChild.LostChildrenModel import is_lost_child
 from Child.ChildrenModel import is_registered_child
 from User.LogOwnModel import add_log_own
+from User.LogLostPassesModel import add_log_lost_passes
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -42,7 +43,8 @@ def received_beacon():
         return jsonify({'pass': 'own'}), 200
 
     if is_lost_child(major=received_major, minor=received_minor):
-        # do something
+        add_log_lost_passes(
+            owner_uid=sent_user['uid'], child_uid=received_user['uid'])
         return jsonify({'pass': 'lost'}), 200
 
     if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
