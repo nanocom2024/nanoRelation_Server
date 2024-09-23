@@ -4,6 +4,7 @@ import datetime
 from StreetPass.NotificationModel import check_notification_allowed
 from LostChild.LostChildrenModel import is_lost_child
 from Child.ChildrenModel import is_registered_child
+from User.LogOwnModel import add_log_own
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -37,12 +38,15 @@ def received_beacon():
         return jsonify({'error': 'Invalid token'}), 400
 
     if received_user['uid'] == sent_user['uid']:
+        add_log_own(owner_uid=sent_user['uid'])
         return jsonify({'pass': 'own'}), 200
 
     if is_lost_child(major=received_major, minor=received_minor):
+        # do something
         return jsonify({'pass': 'lost'}), 200
 
     if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
+        # do something
         return jsonify({'pass': 'child'}), 200
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
