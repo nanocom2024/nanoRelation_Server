@@ -35,3 +35,19 @@ def add_log_own(owner_uid: str) -> None:
         {'$push': {'timestamps': current_time.timestamp()}},
         upsert=True
     )
+
+
+def get_log_own(owner_uid: str) -> list:
+    """
+    自身のデバイスを検知したログを取得する(order by timestamp)
+
+    :param str owner_uid:
+    :return: list
+    """
+    log_own = db.log_own.find_one({'owner_uid': owner_uid})
+    if not log_own:
+        return []
+
+    res = [{'tag': 'own', 'timestamp': timestamp}
+           for timestamp in log_own['timestamps']]
+    return res

@@ -37,3 +37,21 @@ def add_log_near_own_children(parent_uid: str, child_uid: str) -> None:
         {'$push': {'timestamps': current_time.timestamp()}},
         upsert=True
     )
+
+
+def get_log_near_own_children(parent_uid: str, child_uid: str) -> list:
+    """
+    自身の子供のデバイスを検知したログを取得する(order by timestamp)
+
+    :param str owner_uid:
+    :param str child_uid:
+    :return: list
+    """
+    log_near_own_children = db.log_near_own_children.find_one(
+        {'parent_uid': parent_uid, 'child_uid': child_uid})
+    if not log_near_own_children:
+        return []
+
+    res = [{'tag': 'child', 'timestamp': timestamp}
+           for timestamp in log_near_own_children['timestamps']]
+    return res

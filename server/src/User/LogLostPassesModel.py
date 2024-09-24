@@ -37,3 +37,21 @@ def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
         {'$push': {'timestamps': current_time.timestamp()}},
         upsert=True
     )
+
+
+def get_log_lost_passes(owner_uid: str, child_uid: str) -> list:
+    """
+    迷子になったデバイスを検知したログを取得する(order by timestamp)
+
+    :param str owner_uid:
+    :param str child_uid:
+    :return: list
+    """
+    log_lost_passes = db.log_lost_passes.find_one(
+        {'owner_uid': owner_uid, 'child_uid': child_uid})
+    if not log_lost_passes:
+        return []
+
+    res = [{'tag': 'lost', 'timestamp': timestamp}
+           for timestamp in log_lost_passes['timestamps']]
+    return res
