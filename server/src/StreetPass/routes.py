@@ -2,7 +2,11 @@ from flask import Blueprint, request, jsonify
 from DB import DB
 import datetime
 from StreetPass.NotificationModel import check_notification_allowed
-from StreetPass.LostChildrenModel import is_lost_child
+from LostChild.LostChildrenModel import is_lost_child
+from Child.ChildrenModel import is_registered_child
+from User.LogOwnModel import add_log_own
+from User.LogLostPassesModel import add_log_lost_passes
+from User.LogNearOwnChildrenModel import add_log_near_own_children
 
 STREETPASS_BP = Blueprint('streetpass', __name__, url_prefix='/streetpass')
 
@@ -36,15 +40,23 @@ def received_beacon():
         return jsonify({'error': 'Invalid token'}), 400
 
     if received_user['uid'] == sent_user['uid']:
+        add_log_own(owner_uid=sent_user['uid'])
         return jsonify({'pass': 'own'}), 200
 
     if is_lost_child(major=received_major, minor=received_minor):
+        add_log_lost_passes(
+            owner_uid=sent_user['uid'], child_uid=received_user['uid'])
         return jsonify({'pass': 'lost'}), 200
+
+    if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
+        add_log_near_own_children(
+            parent_uid=sent_user['uid'], child_uid=received_user['uid'])
+        return jsonify({'pass': 'child'}), 200
 
     threshold = datetime.datetime.now() - datetime.timedelta(seconds=30)
     pre_passes.delete_many({'created_at': {'$lt': threshold}})
-    threshold = datetime.datetime.now() - datetime.timedelta(seconds=60)
-    now_passes.delete_many({'created_at': {'$lt': threshold}})
+    threshold = datetime.datetime.now().timestamp() - 60
+    now_passes.delete_many({'timestamp': {'$lt': threshold}})
 
     uid1 = min(received_user['uid'], sent_user['uid'])
     uid2 = max(received_user['uid'], sent_user['uid'])
@@ -55,7 +67,7 @@ def received_beacon():
         data = {
             'uid1': uid1,
             'uid2': uid2,
-            'created_at': datetime.datetime.now()
+            'timestamp': datetime.datetime.now().timestamp()
         }
         now_passes.insert_one(data)
         log_passes.insert_one(data)

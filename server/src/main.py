@@ -6,6 +6,7 @@ from settings import Settings
 from os.path import join, dirname
 from flask_jwt_extended import JWTManager
 from Auth.routes import AUTH_BP
+from User.routes import USER_BP
 from Pairing.routes import PAIRING_BP
 from StreetPass.routes import STREETPASS_BP
 from Notification.routes import NOTIFICATION_BP
@@ -38,6 +39,7 @@ init_server.db_init()
 
 # Blueprint
 app.register_blueprint(AUTH_BP)
+app.register_blueprint(USER_BP)
 app.register_blueprint(PAIRING_BP)
 app.register_blueprint(STREETPASS_BP)
 app.register_blueprint(NOTIFICATION_BP)

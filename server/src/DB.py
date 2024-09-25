@@ -15,6 +15,10 @@ class DB:
         self.__notification_config = db["notification_config"]
         self.__children = db["children"]
         self.__lost_children = db["lost_children"]
+        self.__log_lost_children = db["log_lost_children"]
+        self.__log_own = db["log_own"]
+        self.__log_lost_passes = db["log_lost_passes"]
+        self.__log_near_own_children = db["log_near_own_children"]
 
     # users
     @property
@@ -60,3 +64,23 @@ class DB:
     @property
     def lost_children(self):
         return self.__lost_children
+
+    # log_lost_children
+    @property
+    def log_lost_children(self):
+        return self.__log_lost_children
+
+    # log_own
+    @property
+    def log_own(self):
+        return self.__log_own
+
+    # log_lost_passes
+    @property
+    def log_lost_passes(self):
+        return self.__log_lost_passes
+
+    # log_near_own_children
+    @property
+    def log_near_own_children(self):
+        return self.__log_near_own_children
