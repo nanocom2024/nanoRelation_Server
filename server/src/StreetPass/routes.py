@@ -30,6 +30,13 @@ def received_beacon():
     token = request.json['token']
     if not token:
         return jsonify({'error': 'Missing token'}), 400
+    # optional
+    try:
+        latitude = request.json['latitude']
+        longitude = request.json['longitude']
+    except Exception as e:
+        latitude = 0
+        longitude = 0
 
     received_user = pairings.find_one(
         {'major': received_major, 'minor': received_minor})
@@ -45,7 +52,7 @@ def received_beacon():
 
     if is_lost_child(major=received_major, minor=received_minor):
         add_log_lost_passes(
-            owner_uid=sent_user['uid'], child_uid=received_user['uid'])
+            owner_uid=sent_user['uid'], child_uid=received_user['uid'], latitude=latitude, longitude=longitude)
         return jsonify({'pass': 'lost'}), 200
 
     if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):

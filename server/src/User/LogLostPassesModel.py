@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 db = DB()
 
 
-def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
+def add_log_lost_passes(owner_uid: str, child_uid: str, latitude: float = 0, longitude: float = 0) -> None:
     """
     迷子になったデバイスを検知したログを保存する
 
@@ -14,6 +14,8 @@ def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
 
     :param str owner_uid:
     :param str child_uid:
+    :param float latitude: default 0
+    :param float longitude: default 0
     """
     current_time = datetime.now()
 
@@ -23,7 +25,8 @@ def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
 
     # ログが存在するか、または最新のログが30秒以内かを確認
     if log_latest:
-        last_timestamp = log_latest['timestamps'][-1]  # 最後に保存したタイムスタンプ
+        # 最後に保存したタイムスタンプ
+        last_timestamp = log_latest['timestamps'][-1]['timestamp']
         last_log_time = datetime.fromtimestamp(last_timestamp)
         time_difference = current_time - last_log_time
 
@@ -34,7 +37,11 @@ def add_log_lost_passes(owner_uid: str, child_uid: str) -> None:
     # ログがない、または30秒以上経過している場合は保存
     db.log_lost_passes.update_one(
         {'owner_uid': owner_uid, 'child_uid': child_uid},
-        {'$push': {'timestamps': current_time.timestamp()}},
+        {'$push': {'timestamps': {
+            'timestamp': current_time.timestamp(),
+            'latitude': latitude,
+            'longitude': longitude
+        }}},
         upsert=True
     )
 
@@ -52,6 +59,6 @@ def get_log_lost_passes(owner_uid: str, child_uid: str) -> list:
     if not log_lost_passes:
         return []
 
-    res = [{'tag': 'lost', 'timestamp': timestamp}
-           for timestamp in log_lost_passes['timestamps']]
+    res = [{'tag': 'lost', 'timestamp': one_pass['timestamp']}
+           for one_pass in log_lost_passes['timestamps']]
     return res
