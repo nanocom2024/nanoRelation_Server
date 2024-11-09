@@ -18,7 +18,7 @@ def integrity():
     uids = []
     for user in users.find():
         uids.append(user["uid"])
-    
+
     # friendsDBにuidを追加
     for uid in uids:
         # friendsDBにuidが存在しない場合、uidを追加
@@ -44,7 +44,7 @@ def add_friend(uid, friend_uid):
     if friends.find_one({"uid": uid, "friends": friend_uid}):
         print("friend already exists")
         return False
-    
+
     # フレンドのuidを追加
     friends.update_one( {"uid": uid}, {"$push": {"friends": friend_uid}} )
 
@@ -57,13 +57,26 @@ def remove_friend(uid, friend_uid):
     if not friends.find_one({"uid": uid, "friends": friend_uid}):
         print("friend not found")
         return False
-    
+
     # フレンドのuidを削除
     friends.update_one( {"uid": uid}, {"$pull": {"friends": friend_uid}} )
 
+def get_friends(uid):
+    # uidが存在しない場合、エラー
+    if not friends.find_one({"uid": uid}):
+        print("uid not found")
+        return False
+
+    # フレンドのuidを取得
+    return friends.find_one({"uid": uid})["friends"]
+
 # main function
 if __name__ == "__main__":
+    if not friends.find_one({"uid": "test"}): friends.insert_one({"uid": "test", "friends": []})
+
     add_friend("test", "friend1")
     add_friend("test", "friend2")
 
-    remove_friend("test", "friend1")
+    # remove_friend("test", "friend1")
+
+    print(get_friends("test"))
