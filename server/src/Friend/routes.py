@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from DB import DB
 
+import manageFriend
+
 FRIEND_BP = Blueprint('friend', __name__, url_prefix='/friend')
 
 # MongoDBに接続
@@ -19,12 +21,12 @@ def add_friend():
         if not user['id']: return jsonify({'error': 'UserID not defined'}), 400
 
 @FRIEND_BP.route('/get', methods=['POST'])
-def add_friend():
+def get_friend():
     req_token = request.json['token']
     if not req_token: return jsonify({'error': 'Missing token'}), 400
 
 @FRIEND_BP.route('/delete', methods=['POST'])
-def add_friend():
+def delete_friend():
     req_token = request.json['token']
     if not req_token: return jsonify({'error': 'Missing token'}), 400
 
