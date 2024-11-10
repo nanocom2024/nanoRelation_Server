@@ -35,6 +35,7 @@ def get_friend():
 
     return jsonify({'friends': friends}), 200
 
+# TODO: getだけどPOSTでいいのか？
 @FRIEND_BP.route('/delete', methods=['POST'])
 def delete_friend():
     req_token = request.json['token']
