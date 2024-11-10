@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from DB import DB
 
-import manageFriend
+from Friend import manageFriend
 
 FRIEND_BP = Blueprint('friend', __name__, url_prefix='/friend')
 

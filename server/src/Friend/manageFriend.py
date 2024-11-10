@@ -17,8 +17,6 @@ db = DB()
 users = db.users
 friends = db.friends
 
-print(db.list_collection_names())
-
 def integrity():
     # usersDBから全ユーザーのuidを取得
     uids = []
