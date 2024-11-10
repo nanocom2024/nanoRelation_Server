@@ -41,8 +41,10 @@ def get_friend():
     req_token = request.json['token']
 
     uid = db.users.find_one({'token': req_token})
-    friends = manageFriend.get_friends(uid)
+    if not uid: return jsonify({'error': 'Invalid token'}), 400
     uid = uid['uid']
+
+    friends = manageFriend.get_friends(uid)
 
     return jsonify({'friends': friends}), 200
 
