@@ -2,16 +2,6 @@ from pymongo import MongoClient
 
 from DB import DB
 
-# MongoDBに接続
-# client = MongoClient("localhost", 27017)
-
-# # "db"データベース
-# db = client["db"]
-
-# # コレクション取得 (users, friends)
-# users = db["users"]
-# friends = db["friends"]
-
 db = DB()
 
 users = db.users
@@ -73,14 +63,3 @@ def get_friends(uid):
 
     # フレンドのuidを取得
     return friends.find_one({"uid": uid})["friends"]
-
-# main function
-if __name__ == "__main__":
-    if not friends.find_one({"uid": "test"}): friends.insert_one({"uid": "test", "friends": []})
-
-    add_friend("test", "friend1")
-    add_friend("test", "friend2")
-
-    # remove_friend("test", "friend1")
-
-    print(get_friends("test"))
