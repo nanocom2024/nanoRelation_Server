@@ -34,6 +34,7 @@ def add_friend():
 
     return jsonify({'message': 'Success'}), 200
 
+# TODO: getだけどPOSTでいいのか？
 @FRIEND_BP.route('/get', methods=['POST'])
 def get_friend():
     if not 'token' in request.json: return jsonify({'error': 'Missing token'}), 400
@@ -45,7 +46,6 @@ def get_friend():
 
     return jsonify({'friends': friends}), 200
 
-# TODO: getだけどPOSTでいいのか？
 @FRIEND_BP.route('/delete', methods=['POST'])
 def delete_friend():
     if not 'token' in request.json: return jsonify({'error': 'Missing token'}), 400
