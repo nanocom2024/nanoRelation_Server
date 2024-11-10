@@ -1,15 +1,21 @@
 from pymongo import MongoClient
 
+from DB import DB
+
 # MongoDBに接続
-client = MongoClient("localhost", 27017)
+# client = MongoClient("localhost", 27017)
 
-# "db"データベース
-db = client["db"]
+# # "db"データベース
+# db = client["db"]
 
-# コレクション取得 (users, friends)
-users = db["users"]
-friends = db["friends"]
+# # コレクション取得 (users, friends)
+# users = db["users"]
+# friends = db["friends"]
 
+db = DB()
+
+users = db.users
+friends = db.friends
 
 print(db.list_collection_names())
 
