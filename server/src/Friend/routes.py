@@ -26,7 +26,7 @@ def add_friend():
         if not uid: return jsonify({'error': 'Invalid token'}), 400
         uid = uid['uid']
 
-        friend_uid = db.users.find_one({'name': user['name'], 'uid': user['id']})
+        friend_uid = db.users.find_one({'name': user['name'], 'name_id': user['id']})
         if not friend_uid: return jsonify({'error': 'User not found'}), 400
         friend_uid = friend_uid['uid']
 
@@ -64,7 +64,7 @@ def delete_friend():
         if not uid: return jsonify({'error': 'Invalid token'}), 400
         uid = uid['uid']
 
-        friend_uid = db.users.find_one({'name': user['name'], 'uid': user['id']})
+        friend_uid = db.users.find_one({'name': user['name'], 'name_id': user['id']})
         if not friend_uid: return jsonify({'error': 'User not found'}), 400
         friend_uid = friend_uid['uid']
 
