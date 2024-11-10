@@ -19,6 +19,7 @@ class DB:
         self.__log_own = db["log_own"]
         self.__log_lost_passes = db["log_lost_passes"]
         self.__log_near_own_children = db["log_near_own_children"]
+        self.__friends = db["friends"]
 
     # users
     @property
@@ -84,3 +85,8 @@ class DB:
     @property
     def log_near_own_children(self):
         return self.__log_near_own_children
+
+    # friends
+    @property
+    def friends(self):
+        return self.__friends

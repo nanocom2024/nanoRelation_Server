@@ -12,6 +12,8 @@ from StreetPass.routes import STREETPASS_BP
 from Notification.routes import NOTIFICATION_BP
 from Child.routes import CHILD_BP
 from LostChild.routes import LOSTCHILD_BP
+from Friend.routes import FRIEND_BP
+
 import init_server
 
 import logging
@@ -45,6 +47,7 @@ app.register_blueprint(STREETPASS_BP)
 app.register_blueprint(NOTIFICATION_BP)
 app.register_blueprint(CHILD_BP)
 app.register_blueprint(LOSTCHILD_BP)
+app.register_blueprint(FRIEND_BP)
 
 webhook_url = settings.log_webhook_url
 
