@@ -39,8 +39,18 @@ def add_friend(uid, friend_uid):
         print("friend already exists")
         return False
 
+    # frined_uidの有効性を確認
+    if not friends.find_one({"uid": friend_uid}):
+        if users.find_one({"uid": friend_uid}): integrity()
+        else:
+            print("friend_uid not found")
+            return False
+
     # フレンドのuidを追加
     friends.update_one( {"uid": uid}, {"$push": {"friends": friend_uid}} )
+
+    # 相手の方にも自分のuidを追加
+    friends.update_one( {"uid": friend_uid}, {"$push": {"friends": uid}} )
 
 def remove_friend(uid, friend_uid):
     # uidが存在しない場合、エラー
@@ -52,8 +62,16 @@ def remove_friend(uid, friend_uid):
         print("friend not found")
         return False
 
+    # frined_uidの有効性を確認
+    if not friends.find_one({"uid": friend_uid}):
+        print("friend_uid not found")
+        return False
+
     # フレンドのuidを削除
     friends.update_one( {"uid": uid}, {"$pull": {"friends": friend_uid}} )
+
+    # 相手側から自分を削除
+    friends.update_one( {"uid": friend_uid}, {"$pull": {"friends": uid}} )
 
 def get_friends(uid):
     # uidが存在しない場合、エラー
