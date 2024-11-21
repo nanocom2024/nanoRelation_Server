@@ -92,3 +92,13 @@ def auth_check():
     users.update_one({'token': token}, {'$set': {'token': new_token}})
 
     return jsonify({'token': new_token}), 200
+
+
+@PAIRING_BP.route('/fetch_pairings', methods=['POST'])
+def fetch_pairings():
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    res = PairingModel.fetch_pairings()
+    return jsonify({'pairings': res}), 200
