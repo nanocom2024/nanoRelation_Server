@@ -91,7 +91,7 @@ def auth_check():
     new_token = create_access_token(identity=user['token'])
     users.update_one({'token': token}, {'$set': {'token': new_token}})
 
-    return jsonify({'token': new_token, 'user_uid': user['uid']}), 200
+    return jsonify({'token': new_token, 'user_uid': user['uid'], 'name': user['name'], 'name_id': user['name_id']}), 200
 
 
 @PAIRING_BP.route('/fetch_pairings', methods=['POST'])

@@ -37,10 +37,10 @@ def signup():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
-    UsersModel.create_account(uid=user.uid, name=name,
-                              email=email, token=access_token)
+    user = UsersModel.create_account(uid=user.uid, name=name,
+                                     email=email, token=access_token)
 
-    return jsonify({'token': access_token, 'user_uid': user.uid}), 200
+    return jsonify({'token': access_token, 'user_uid': user['uid'], 'name': user['name'], 'name_id': user['name_id']}), 200
 
 
 @AUTH_BP.route('/signin', methods=['POST'])
@@ -73,7 +73,7 @@ def signin():
         users.update_one({'email': email}, {'$set': {'token': res['idToken']}})
 
     user = db.users.find_one({'email': email})
-    return jsonify({'token': res['idToken'], 'user_uid': user['uid']}), 200
+    return jsonify({'token': res['idToken'], 'user_uid': user['uid'], 'name': user['name'], 'name_id': user['name_id']}), 200
 
 
 @AUTH_BP.route('/signout', methods=['POST'])
