@@ -82,3 +82,25 @@ def received_beacon():
     pre_passes.insert_one(
         {'sent_uid': sent_user['uid'], 'received_uid': received_user['uid'], 'created_at': datetime.datetime.now()})
     return jsonify({'pass': 'false'}), 200
+
+
+@STREETPASS_BP.route('/received_lost_beacon', methods=['POST'])
+def received_lost_beacon():
+    major = request.json['major']
+    if not major:
+        return jsonify({'error': 'Missing major'}), 400
+    minor = request.json['minor']
+    if not minor:
+        return jsonify({'error': 'Missing minor'}), 400
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+    # optional
+    try:
+        latitude = request.json['latitude']
+        longitude = request.json['longitude']
+    except Exception as e:
+        latitude = 0
+        longitude = 0
+
+    
