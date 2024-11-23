@@ -21,16 +21,16 @@ def get_logs(request_uid: str, target_uid: str) -> list:
     elif is_registered_child(parent_uid=request_uid, child_uid=target_uid):
         logs = get_log_near_own_children(
             parent_uid=request_uid, child_uid=target_uid)
-        logs.extend(get_log_lost_passes(
-            owner_uid=request_uid, child_uid=target_uid))
+        # logs.extend(get_log_lost_passes(
+        #     owner_uid=request_uid, child_uid=target_uid))
 
         # tag -> child or lost
         return sorted(logs, key=lambda x: x['timestamp'])
 
     else:
         logs = get_log_passes(request_uid=request_uid, target_uid=target_uid)
-        logs.extend(get_log_lost_passes(
-            owner_uid=request_uid, child_uid=target_uid))
+        # logs.extend(get_log_lost_passes(
+        #     owner_uid=request_uid, child_uid=target_uid))
 
         # tag -> pass or lost
         return sorted(logs, key=lambda x: x['timestamp'])
