@@ -81,7 +81,9 @@ def get_friends(uid):
     # uidが存在しない場合、エラー
     if not friends.find_one({"uid": uid}):
         print("uid not found")
-        return False
+
+        # 整合性が取れていないので，応急処置
+        return []
 
     users = fetch_users()
     res = []
