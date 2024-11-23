@@ -40,7 +40,7 @@ def signup():
     UsersModel.create_account(uid=user.uid, name=name,
                               email=email, token=access_token)
 
-    return jsonify({'token': access_token}), 200
+    return jsonify({'token': access_token, 'user_uid': user.uid}), 200
 
 
 @AUTH_BP.route('/signin', methods=['POST'])
@@ -72,7 +72,8 @@ def signin():
     else:
         users.update_one({'email': email}, {'$set': {'token': res['idToken']}})
 
-    return jsonify({'token': res['idToken']}), 200
+    user = db.users.find_one({'email': email})
+    return jsonify({'token': res['idToken'], 'user_uid': user['uid']}), 200
 
 
 @AUTH_BP.route('/signout', methods=['POST'])
