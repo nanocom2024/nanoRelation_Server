@@ -31,6 +31,11 @@ def integrity():
 
 
 def add_friend(uid, friend_uid):
+    # 自分をフレンドに追加しようとしている場合、エラー
+    if uid == friend_uid:
+        print("cannot add yourself as a friend")
+        return False
+
     # uidが存在しない場合、エラー
     if not friends.find_one({"uid": uid}):
         if db.users.find_one({"uid": uid}):
@@ -130,7 +135,7 @@ def generate_qr_data(uid: str, name: str) -> str:
     db.qr_data.insert_one({
         'uid': uid,
         'code': code,
-        'timestamp': current_time.timestamp()
+        'timestamp': current_time
     })
 
     return data

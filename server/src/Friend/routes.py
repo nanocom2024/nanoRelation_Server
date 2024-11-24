@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from DB import DB
+import datetime
 
 from Friend import manageFriend
 
@@ -108,3 +109,29 @@ def fetch_qr_data():
 
     data = manageFriend.generate_qr_data(uid=user['uid'], name=user['name'])
     return jsonify({'data': data}), 200
+
+
+@FRIEND_BP.route('/add_request', methods=['POST'])
+def add_request():
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+    code = request.json['code']
+    if not code:
+        return jsonify({'error': 'Missing code'}), 400
+
+    user = db.users.find_one({'token': token})
+    if not user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    # 5分以内のQRコードのみ有効
+    # 5分以上経過しているデータをqr_dataから削除する
+    db.qr_data.delete_many(
+        {'timestamp': {'$lt': datetime.datetime.now() - datetime.timedelta(minutes=5)}})
+
+    qr_data = db.qr_data.find_one({'code': code})
+    if not qr_data:
+        return jsonify({'error': 'Invalid code'}), 400
+
+    manageFriend.add_friend(uid=user['uid'], friend_uid=qr_data['uid'])
+    return jsonify({'done': 'success'}), 200
