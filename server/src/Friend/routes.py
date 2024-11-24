@@ -135,3 +135,27 @@ def add_request():
 
     manageFriend.add_friend(uid=user['uid'], friend_uid=qr_data['uid'])
     return jsonify({'done': 'success'}), 200
+
+
+@FRIEND_BP.route('/delete_request', methods=['POST'])
+def delete_request():
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+    friend_uid = request.json['friend_uid']
+    if not friend_uid:
+        return jsonify({'error': 'Missing friend_uid'}), 400
+    name_id = request.json['name_id']
+    if not name_id:
+        return jsonify({'error': 'Missing name_id'}), 400
+
+    req_user = db.users.find_one({'token': token})
+    if not req_user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    friend = db.users.find_one({'name_id': name_id, 'uid': friend_uid})
+    if not friend:
+        return jsonify({'error': 'Invalid friend_uid, name_id'}), 400
+
+    manageFriend.remove_friend(uid=req_user['uid'], friend_uid=friend_uid)
+    return jsonify({'done': 'success'}), 200
