@@ -1,4 +1,7 @@
 from pymongo import MongoClient
+import random
+import string
+from datetime import datetime
 
 from DB import DB
 
@@ -106,3 +109,28 @@ def fetch_users():
     res = {row["uid"]: {"uid": row["uid"], "name": row["name"], "name_id": row["name_id"]}
            for row in data}
     return res
+
+
+def generate_qr_data(uid: str, name: str) -> str:
+    """
+    QRコードのデータを生成する
+    20文字の乱数 + ユーザー名
+
+    :param str uid: ユーザーID
+    :param str name: ユーザー名
+    :return: QRコードのデータ
+    """
+
+    code = ''.join(random.choices(
+        string.ascii_lowercase + string.digits, k=20))
+    data = code + ',' + name
+
+    current_time = datetime.now()
+
+    db.qr_data.insert_one({
+        'uid': uid,
+        'code': code,
+        'timestamp': current_time.timestamp()
+    })
+
+    return data

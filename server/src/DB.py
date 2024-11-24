@@ -21,6 +21,7 @@ class DB:
         self.__log_lost_passes = db["log_lost_passes"]
         self.__log_near_own_children = db["log_near_own_children"]
         self.__friends = db["friends"]
+        self.__qr_data = db["qr_data"]
 
     # users
     @property
@@ -96,3 +97,8 @@ class DB:
     @property
     def observe_pairings(self):
         return self.__observe_pairings
+
+    # qr_data
+    @property
+    def qr_data(self):
+        return self.__qr_data
