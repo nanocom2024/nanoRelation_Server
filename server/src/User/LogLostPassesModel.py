@@ -39,6 +39,5 @@ def get_log_lost_passes(parent_uid: str) -> list:
     if not log_lost_passes:
         return []
 
-    res = [{'tag': 'lost', 'timestamp': one_pass['timestamp']}
-           for one_pass in log_lost_passes['timestamps']]
+    res = log_lost_passes['timestamps']
     return res
