@@ -9,6 +9,7 @@ class DB:
         self.__users = db["users"]
         self.__device_keys = db["device_keys"]
         self.__pairings = db["pairings"]
+        self.__observe_pairings = db["observe_pairings"]
         self.__pre_passes = db["pre_passes"]
         self.__now_passes = db["now_passes"]
         self.__log_passes = db["log_passes"]
@@ -19,6 +20,8 @@ class DB:
         self.__log_own = db["log_own"]
         self.__log_lost_passes = db["log_lost_passes"]
         self.__log_near_own_children = db["log_near_own_children"]
+        self.__friends = db["friends"]
+        self.__qr_data = db["qr_data"]
 
     # users
     @property
@@ -84,3 +87,18 @@ class DB:
     @property
     def log_near_own_children(self):
         return self.__log_near_own_children
+
+    # friends
+    @property
+    def friends(self):
+        return self.__friends
+
+    # observe_pairings
+    @property
+    def observe_pairings(self):
+        return self.__observe_pairings
+
+    # qr_data
+    @property
+    def qr_data(self):
+        return self.__qr_data

@@ -30,6 +30,13 @@ def received_beacon():
     token = request.json['token']
     if not token:
         return jsonify({'error': 'Missing token'}), 400
+    # optional
+    try:
+        latitude = request.json['latitude']
+        longitude = request.json['longitude']
+    except Exception as e:
+        latitude = 0
+        longitude = 0
 
     received_user = pairings.find_one(
         {'major': received_major, 'minor': received_minor})
@@ -43,10 +50,10 @@ def received_beacon():
         add_log_own(owner_uid=sent_user['uid'])
         return jsonify({'pass': 'own'}), 200
 
-    if is_lost_child(major=received_major, minor=received_minor):
-        add_log_lost_passes(
-            owner_uid=sent_user['uid'], child_uid=received_user['uid'])
-        return jsonify({'pass': 'lost'}), 200
+    # if is_lost_child(major=received_major, minor=received_minor):
+    #     add_log_lost_passes(
+    #         owner_uid=sent_user['uid'], child_uid=received_user['uid'], latitude=latitude, longitude=longitude)
+    #     return jsonify({'pass': 'lost'}), 200
 
     if is_registered_child(parent_uid=sent_user['uid'], child_uid=received_user['uid']):
         add_log_near_own_children(
@@ -75,3 +82,31 @@ def received_beacon():
     pre_passes.insert_one(
         {'sent_uid': sent_user['uid'], 'received_uid': received_user['uid'], 'created_at': datetime.datetime.now()})
     return jsonify({'pass': 'false'}), 200
+
+
+@STREETPASS_BP.route('/received_lost_beacon', methods=['POST'])
+def received_lost_beacon():
+    major = request.json['major']
+    if not major:
+        return jsonify({'error': 'Missing major'}), 400
+    minor = request.json['minor']
+    if not minor:
+        return jsonify({'error': 'Missing minor'}), 400
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+    # optional
+    latitude = request.json['latitude'] if 'latitude' in request.json else 0
+    longitude = request.json['longitude'] if 'longitude' in request.json else 0
+
+    parent_user = db.observe_pairings.find_one(
+        {'major': major, 'minor': minor})
+    if not parent_user:
+        return jsonify({'error': 'Invalid major_minor'}), 400
+    provide_user = users.find_one({'token': token})
+    if not provide_user:
+        return jsonify({'error': 'Invalid token'}), 400
+
+    add_log_lost_passes(
+        provider_uid=provide_user['uid'], parent_uid=parent_user['uid'], latitude=latitude, longitude=longitude)
+    return jsonify({'pass': 'ok'}), 200

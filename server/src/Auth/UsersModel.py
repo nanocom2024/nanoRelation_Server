@@ -7,14 +7,15 @@ import string
 db = DB()
 
 
-def create_account(uid: str, name: str, email: str, token: str) -> None:
+def create_account(uid: str, name: str, email: str, token: str) -> dict:
     """
     ユーザーアカウントを作成する(DBに追加)
 
     :param str uid:
     :param str name:
     :param str email:
-    :param str token
+    :param str token:
+    :return user: dict
     """
     name_id = genarate_username_id(name)
     user = {
@@ -25,6 +26,7 @@ def create_account(uid: str, name: str, email: str, token: str) -> None:
         'token': token
     }
     db.users.insert_one(user)
+    return user
 
 
 def genarate_username_id(name: str) -> str:
