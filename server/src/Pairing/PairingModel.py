@@ -38,6 +38,19 @@ def generate(key: str) -> tuple[int, int]:
     return major, minor
 
 
+def fetch_pairings() -> list[dict]:
+    """
+    pairingsを取得する
+
+    :return pairings: list[dict]
+    """
+
+    data = db.pairings.find()
+    res = [{"uid": row["uid"], "major": row["major"], "minor": row["minor"]}
+           for row in data]
+    return res
+
+
 if __name__ == '__main__':
     public_key = 'a' * 64
     print(generate(public_key))

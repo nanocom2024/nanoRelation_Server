@@ -4,6 +4,7 @@ from DB import DB
 from LostChild.LostChildrenModel import add_lost, delete_lost, is_lost_child
 from Child.ChildrenModel import is_registered_child
 from LostChild.LogLostChildrenModel import add_log_lost, get_log_lost
+from User.LogLostPassesModel import get_log_lost_passes
 
 LOSTCHILD_BP = Blueprint('lost_child', __name__, url_prefix='/lost_child')
 
@@ -174,3 +175,22 @@ def fetch_messages():
     messages = log['messages']
 
     return jsonify({'messages': messages}), 200
+
+
+@LOSTCHILD_BP.route('/fetch_info', methods=['POST'])
+def fetch_info():
+    # parentのtoken
+    token = request.json['token']
+    if not token:
+        return jsonify({'error': 'Missing token'}), 400
+
+    # tokenの認証(parent)
+    parent = users.find_one({'token': token})
+    if not parent:
+        return jsonify({'error': 'Invalid token'}), 401
+
+    log = get_log_lost_passes(parent_uid=parent['uid'])
+    if not log:
+        return jsonify({'info': []}), 200
+
+    return jsonify({'info': log}), 200
